@@ -2,13 +2,17 @@ const sequelize = require('sequelize');
 
 //BASE DE DATOS
 const db = new sequelize(
-    'base', //nombre de la base de datos
-    'user', //usuario de la BD
-    'clave', //clave del usuario
+    'ferreteria_MovilWeb', //nombre de la base de datos
+    'adminUnicah', //usuario de la BD
+    'rootUnicah1', //clave del usuario
     {
-        host: 'localhost', //servidor
-        dialect: 'mysql' , //dbms
-        port: '3306', //puerto
+        host: 'andresmunicah.database.windows.net', //servidor
+        dialect: 'mssql' , //dbms
+        driver:'tedious',
+        port: '1433', //puerto
+        options: {
+            encrypt:true
+        }
     }
 
 );
