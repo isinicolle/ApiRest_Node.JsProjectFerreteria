@@ -1,0 +1,211 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model Categorias {
+  id_categoria          Int         @id(map: "PK_Categorias") @default(autoincrement())
+  descripcion_categoria String      @db.NVarChar(50)
+  estado                Boolean
+  Productos             Productos[]
+}
+
+model Ciudades {
+  id_ciudad        Int                @id(map: "PK_Ciudades") @default(autoincrement())
+  nombre_ciudad    String             @db.NVarChar(50)
+  codigoPostal     String             @db.NVarChar(5)
+  id_departamento  Int
+  Departamentos    Departamentos      @relation(fields: [id_departamento], references: [id_departamento], onUpdate: NoAction, map: "FK_Ciudades_Departamentos")
+  Clientes         Clientes[]
+  DireccionesEnvio DireccionesEnvio[]
+  Empleados        Empleados[]
+  EmpresasEnvio    EmpresasEnvio[]
+  Proveedores      Proveedores[]
+}
+
+model Clientes {
+  id_cliente        Int                @id(map: "PK_Clientes") @default(autoincrement())
+  nom_cliente       String             @db.NVarChar(50)
+  apellido_cliente  String             @db.NVarChar(50)
+  RTN               String?            @db.NVarChar(14)
+  direccion_cliente String             @db.NVarChar(200)
+  id_ciudad         Int
+  tel_cliente       String             @db.NVarChar(12)
+  estado            Boolean
+  DNI_Cliente       String             @db.NVarChar(13)
+  Ciudades          Ciudades           @relation(fields: [id_ciudad], references: [id_ciudad], onUpdate: NoAction, map: "FK_Clientes_Ciudades")
+  usuariosClientes  usuariosClientes[]
+  Venta             Venta[]
+}
+
+model Compras {
+  id_compra      Int              @id(map: "PK_Compras") @default(autoincrement())
+  fecha_compra   DateTime         @db.Date
+  id_prov        Int
+  id_empleado    Int
+  isv            Float
+  descuento      Float
+  Proveedores    Proveedores      @relation(fields: [id_prov], references: [id_prov], onUpdate: NoAction, map: "FK_Compras_Proveedores")
+  DetalleCompras DetalleCompras[]
+}
+
+model Departamentos {
+  id_departamento    Int        @id(map: "PK_Departamentos") @default(autoincrement())
+  nombreDepartamento String     @db.NVarChar(50)
+  Ciudades           Ciudades[]
+}
+
+model DetalleCompras {
+  id_detalleCompra Int     @id(map: "PK_DetalleCompras") @default(autoincrement())
+  id_producto      Int
+  id_compra        Int
+  precio           Float
+  cantidad         Float
+  Compras          Compras @relation(fields: [id_compra], references: [id_compra], onUpdate: NoAction, map: "FK_DetalleCompras_Compras")
+}
+
+model DetallesVentas {
+  id_detalleVenta Int       @id(map: "PK_DetallesVentas")
+  id_producto     Int
+  id_venta        Int
+  precio          Float     @db.Money
+  cantidad        Float
+  Productos       Productos @relation(fields: [id_producto], references: [id_producto], onUpdate: NoAction, map: "FK_DetallesVentas_Productos")
+  Venta           Venta     @relation(fields: [id_venta], references: [id_Venta], onUpdate: NoAction, map: "FK_DetallesVentas_Venta")
+}
+
+model DireccionesEnvio {
+  id_direccionEnvio  Int              @id(map: "PK_DireccionesEnvio") @default(autoincrement())
+  direccion          String           @db.NVarChar(50)
+  id_ciudad          Int
+  id_usuarioCliente  Int
+  direccion_opcional String           @db.NVarChar(50)
+  Ciudades           Ciudades         @relation(fields: [id_ciudad], references: [id_ciudad], onUpdate: NoAction, map: "FK_DireccionesEnvio_Ciudades")
+  usuariosClientes   usuariosClientes @relation(fields: [id_usuarioCliente], references: [id_usuarioCliente], onUpdate: NoAction, map: "FK_DireccionesEnvio_usuariosClientes")
+}
+
+model Empleados {
+  id_empleado          Int                @id(map: "PK_Empleados") @default(autoincrement())
+  nom_empleado         String             @db.NVarChar(50)
+  apellido_empleado    String             @db.NVarChar(50)
+  correo_empleado      String             @db.NVarChar(50)
+  telefono_empleado    String             @db.NVarChar(50)
+  direccion_empleado   String             @db.NVarChar(50)
+  id_ciudad            Int
+  id_rol               Int
+  fnacimiento_empleado Int
+  Estado               Boolean
+  Ciudades             Ciudades           @relation(fields: [id_ciudad], references: [id_ciudad], onUpdate: NoAction, map: "FK_Empleados_Ciudades")
+  RolesEmpleados       RolesEmpleados     @relation(fields: [id_rol], references: [id_rol], onUpdate: NoAction, map: "FK_Empleados_RolesEmpleados")
+  UsuarioEmpleados     UsuarioEmpleados[]
+}
+
+model EmpresasEnvio {
+  id_empresaEnvio   Int      @id(map: "PK_EmpresasEnvio") @default(autoincrement())
+  nombre_empresa    String   @db.NVarChar(50)
+  direccion_empresa String   @db.NVarChar(50)
+  telefono_empresa  String   @db.NVarChar(15)
+  id_ciudad         Int
+  estado            Boolean
+  correo_empresa    String   @db.NVarChar(50)
+  Ciudades          Ciudades @relation(fields: [id_ciudad], references: [id_ciudad], onUpdate: NoAction, map: "FK_EmpresasEnvio_Ciudades")
+  Envios            Envios[]
+}
+
+model Envios {
+  id_envio        Int           @id(map: "PK_Envios") @default(autoincrement())
+  num_rastreo     String        @db.NVarChar(50)
+  id_venta        Int
+  id_empresaEnvio Int
+  EmpresasEnvio   EmpresasEnvio @relation(fields: [id_empresaEnvio], references: [id_empresaEnvio], onUpdate: NoAction, map: "FK_Envios_EmpresasEnvio")
+  Venta           Venta         @relation(fields: [id_venta], references: [id_Venta], onUpdate: NoAction, map: "FK_Envios_Venta")
+}
+
+model Marcas {
+  id_marca          Int         @id(map: "PK_Marcas") @default(autoincrement())
+  descripcion_marca String      @db.NVarChar(50)
+  estado            Boolean
+  Productos         Productos[]
+}
+
+model Productos {
+  id_producto          Int              @id(map: "PK_Productos") @default(autoincrement())
+  descripcion_producto String           @db.NVarChar(50)
+  id_marca             Int
+  id_categoria         Int
+  id_proveedor         Int
+  cantidad_por_unidad  String           @db.NVarChar(50)
+  costo_producto       Float            @db.Money
+  precio_actual        Float            @db.Money
+  stock                Float
+  descuento            Float?
+  estado               Boolean
+  Categorias           Categorias       @relation(fields: [id_categoria], references: [id_categoria], onUpdate: NoAction, map: "FK_Productos_Categorias")
+  Marcas               Marcas           @relation(fields: [id_marca], references: [id_marca], onUpdate: NoAction, map: "FK_Productos_Marcas")
+  Proveedores          Proveedores      @relation(fields: [id_proveedor], references: [id_prov], onUpdate: NoAction, map: "FK_Productos_Proveedores")
+  DetallesVentas       DetallesVentas[]
+}
+
+model Proveedores {
+  id_prov        Int         @id(map: "PK_Proveedores") @default(autoincrement())
+  nom_prov       String      @db.NVarChar(50)
+  telefono_prov  String      @db.NVarChar(50)
+  correo_prov    String      @db.NVarChar(50)
+  direccion_prov String      @db.NChar(10)
+  id_ciudad      Int
+  Estado         Int
+  Ciudades       Ciudades    @relation(fields: [id_ciudad], references: [id_ciudad], onUpdate: NoAction, map: "FK_Proveedores_Ciudades")
+  Compras        Compras[]
+  Productos      Productos[]
+}
+
+model RolesEmpleados {
+  id_rol      Int         @id(map: "PK_RolesEmpleados") @default(autoincrement())
+  descripcion String      @db.NVarChar(50)
+  Empleados   Empleados[]
+}
+
+model sysdiagrams {
+  name         String @db.NVarChar(128)
+  principal_id Int
+  diagram_id   Int    @id(map: "PK__sysdiagr__C2B05B6184E13219") @default(autoincrement())
+  version      Int?
+  definition   Bytes?
+
+  @@unique([principal_id, name], map: "UK_principal_name")
+}
+
+model UsuarioEmpleados {
+  id_usuarioEmpleado   Int       @id(map: "PK_UsuarioEmpleados") @default(autoincrement())
+  nom_usuarioEmpleado  String    @db.NVarChar(50)
+  contrasenia_empleado String    @db.NVarChar(250)
+  id_empleado          Int
+  Empleados            Empleados @relation(fields: [id_empleado], references: [id_empleado], onUpdate: NoAction, map: "FK_UsuarioEmpleados_Empleados")
+}
+
+model usuariosClientes {
+  id_usuarioCliente  Int                @id(map: "PK_usuariosClientes") @default(autoincrement())
+  nombre_usuario     String             @db.NVarChar(50)
+  contraenia_usuario String             @db.NVarChar(255)
+  id_cliente         Int
+  correo_usuario     String             @db.NVarChar(50)
+  estado             Boolean
+  Clientes           Clientes           @relation(fields: [id_cliente], references: [id_cliente], onUpdate: NoAction, map: "FK_usuariosClientes_Clientes")
+  DireccionesEnvio   DireccionesEnvio[]
+}
+
+model Venta {
+  id_Venta       Int              @id(map: "PK_Venta") @default(autoincrement())
+  fecha          DateTime         @db.Date
+  id_cliente     Int
+  RTN_estado     Boolean
+  ISV            Float
+  descuento      Float
+  Clientes       Clientes         @relation(fields: [id_cliente], references: [id_cliente], onUpdate: NoAction, map: "FK_Venta_Clientes")
+  DetallesVentas DetallesVentas[]
+  Envios         Envios[]
+}

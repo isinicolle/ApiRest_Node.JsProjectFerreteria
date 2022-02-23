@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/isinicolle/Ferreteria_Movil2#readme",
   "dependencies": {
+    "@prisma/client": "^3.10.0",
     "bcrypt": "^5.0.1",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
@@ -29,7 +30,6 @@
     "nodemon": "^2.0.15",
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
-    "sequelize": "^6.16.1",
-    "tedious": "^14.3.0"
+    "prisma": "^3.10.0"
   }
 }
