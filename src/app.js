@@ -12,6 +12,7 @@ app.use(express.json());
 app.set('json spaces',2);
 
 app.use('/api/', rutas );
+app.use('/api/clientes/',require('./rutas/rutaclientes'));
 
 //definir el puerto que se usara en el servidor
 app.listen(6001, ()=>
