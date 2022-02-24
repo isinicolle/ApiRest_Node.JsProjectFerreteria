@@ -4,5 +4,5 @@ const router = Router();
 
 //trabajando con rutas
 router.get('/listarUsuarioCliente', controladorUsuarioCliente.listarUsuarioCliente);
-
+router.post('/insertarUsuarioCliente', controladorUsuarioCliente.insertarUsuariocliente);
 module.exports=router; 

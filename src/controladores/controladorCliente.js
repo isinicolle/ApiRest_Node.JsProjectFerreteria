@@ -11,3 +11,16 @@ exports.listarClientes = async (req,res,next) =>{
         next(error);
     }
 }
+
+
+exports.insertarcliente = async (req,res,next) =>{
+    try {
+        const clientes = await prisma.clientes.create({
+            data: req.body,
+        })
+        res.json(clientes);
+    } catch (error) {
+        console.log(error)
+        next(error);
+    }
+}

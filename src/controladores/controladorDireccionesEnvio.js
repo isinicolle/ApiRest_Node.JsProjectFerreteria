@@ -11,3 +11,15 @@ exports.listarDireccionesEnvio = async (req,res,next) =>{
         next(error);
     }
 }
+
+exports.insertarDireccionenvio = async (req,res,next) =>{
+    try {
+        const direccionesEnvio = await prisma.direccionesEnvio.create({
+            data: req.body,
+        })
+        res.json(direccionesEnvio);
+    } catch (error) {
+        console.log(error)
+        next(error);
+    }
+}
