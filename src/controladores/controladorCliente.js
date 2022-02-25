@@ -24,3 +24,36 @@ exports.insertarcliente = async (req,res,next) =>{
         next(error);
     }
 }
+
+exports.eliminarCliente= async (req,res) =>{
+    const {id_cliente} =req.query;
+
+    if(!id_cliente)
+    {
+        res.send("Envie el id de registro");
+    }
+    else
+    {
+        try {
+            const eliminarCliente = await prisma.clientes.delete(
+                {
+                    where:
+                    {
+                        id_cliente: Number(id_cliente),
+                    },//
+                })//
+                res.json(eliminarCliente)
+        } catch (error) {
+            next(error)
+        }
+       
+           
+    }
+}
+
+
+
+
+exports.actualizarCliente= async (req,res,next) =>{
+   
+}

@@ -5,7 +5,7 @@ const router = Router();
 //trabajando con rutas
 router.get('/listarClientes', controladorCliente.listarClientes);
 router.post('/insertarCliente', controladorCliente.insertarcliente);
-//router.get('/listarClientes', controladorCliente.listarClientes);
+router.delete('/eliminarCliente', controladorCliente.eliminarCliente);
 //router.get('/listarClientes', controladorCliente.listarClientes);
 
 
