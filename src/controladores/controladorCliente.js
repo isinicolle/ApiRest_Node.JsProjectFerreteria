@@ -53,7 +53,24 @@ exports.eliminarCliente= async (req,res) =>{
 
 
 
-
-exports.actualizarCliente= async (req,res,next) =>{
+/*
+exports.actualizarCliente= async (req,res) =>{
    
+  try{
+    const {id_cliente} = req.params
+    const actualizarCliente = await prisma.clientes.update({
+  
+      where: { id_cliente: Number(id_cliente) },
+      data: req.body,
+      include: {
+          Ciudades: true,
+      },
+    })
+    res.json(actualizarCliente)
+  }
+  catch(error)
+  {
+    next(error)
+  }
 }
+*/

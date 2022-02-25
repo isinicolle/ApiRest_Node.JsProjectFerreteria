@@ -6,7 +6,7 @@ const router = Router();
 router.get('/listarClientes', controladorCliente.listarClientes);
 router.post('/insertarCliente', controladorCliente.insertarcliente);
 router.delete('/eliminarCliente', controladorCliente.eliminarCliente);
-//router.get('/listarClientes', controladorCliente.listarClientes);
+//router.put('/actualizarCliente', controladorCliente.actualizarCliente);
 
 
 module.exports=router; 
