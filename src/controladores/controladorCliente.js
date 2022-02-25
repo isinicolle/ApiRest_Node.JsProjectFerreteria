@@ -1,7 +1,7 @@
 const {PrismaClient} = require('@prisma/client') ;
 const prisma = new PrismaClient();
 
-
+//listar cliente
 exports.listarClientes = async (req,res,next) =>{
     try {
         const clientes = await prisma.clientes.findMany();
@@ -12,7 +12,34 @@ exports.listarClientes = async (req,res,next) =>{
     }
 }
 
+//buscar cliente
+exports.buscarCliente = async (req,res,next) =>{
+    const {id_cliente} =req.query;
 
+    if(!id_cliente)
+    {
+        res.send("Envie el id de cliente");
+    }
+    else
+    {
+        try {
+            const buscarCliente = await prisma.clientes.findUnique(
+                {
+                    where:
+                    {
+                        id_cliente: Number(id_cliente),
+                    },//
+                })//
+                res.json(buscarCliente)
+        } catch (error) {
+            next(error)
+        }
+       
+           
+    }
+}
+
+//insertar cliente
 exports.insertarcliente = async (req,res,next) =>{
     try {
         const clientes = await prisma.clientes.create({
@@ -25,6 +52,7 @@ exports.insertarcliente = async (req,res,next) =>{
     }
 }
 
+//actualizar cliente
 exports.eliminarCliente= async (req,res) =>{
     const {id_cliente} =req.query;
 
@@ -53,24 +81,29 @@ exports.eliminarCliente= async (req,res) =>{
 
 
 
-/*
-exports.actualizarCliente= async (req,res) =>{
+
+/*exports.actualizarCliente= async (req,res) =>{
    
   try{
     const {id_cliente} = req.params
-    const actualizarCliente = await prisma.clientes.update({
-  
-      where: { id_cliente: Number(id_cliente) },
-      data: req.body,
-      include: {
-          Ciudades: true,
-      },
+    const updateCliente = await prisma.clientes.update({
+        where:
+        {
+            id_cliente: Number(id_cliente),
+        },
+        data: req.body,
+        include: 
+        {
+            Ciudades: true
+        },
+      
     })
-    res.json(actualizarCliente)
+    res.json(updateCliente)
+  //
   }
   catch(error)
   {
-    next(error)
+    res.send(error)
   }
-}
-*/
+}*/
+
