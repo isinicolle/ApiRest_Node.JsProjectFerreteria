@@ -12,6 +12,32 @@ exports.listarUsuarioCliente = async (req,res,next) =>{
     }
 }
 
+exports.buscarUsuarioCliente = async (req,res,next) =>{
+    const {id_usuarioCliente} =req.query;
+
+    if(!id_usuarioCliente)
+    {
+        res.send("Envie el id de cliente");
+    }
+    else
+    {
+        try {
+            const buscarUsuarioCliente = await prisma.usuariosClientes.findUnique(
+                {
+                    where:
+                    {
+                        id_usuarioCliente: Number(id_usuarioCliente),
+                    },//
+                })//
+                res.json(buscarUsuarioCliente)
+        } catch (error) {
+            next(error)
+        }
+       
+           
+    }
+}
+
 exports.insertarUsuariocliente = async (req,res,next) =>{
     try {
         const clientes = await prisma.usuariosClientes.create({
