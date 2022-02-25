@@ -1,6 +1,7 @@
 const {PrismaClient} = require('@prisma/client') ;
 const prisma = new PrismaClient();
 
+
 //listar cliente
 exports.listarClientes = async (req,res,next) =>{
     try {
@@ -82,28 +83,31 @@ exports.eliminarCliente= async (req,res) =>{
 
 
 
-/*exports.actualizarCliente= async (req,res) =>{
+exports.actualizarCliente= async (req,res) =>{
    
-  try{
-    const {id_cliente} = req.params
-    const updateCliente = await prisma.clientes.update({
+    
+    try {
+        const {id_cliente} =req.query;
+        const {nom_cliente,apellido_cliente, RTN , DNI_Cliente , tel_cliente} = req.body;
+        const clientes = await prisma.clientes.update({
         where:
         {
-            id_cliente: Number(id_cliente),
+              id_cliente: 7,
         },
-        data: req.body,
-        include: 
+        data: 
         {
-            Ciudades: true
-        },
-      
-    })
-    res.json(updateCliente)
-  //
-  }
-  catch(error)
-  {
-    res.send(error)
-  }
-}*/
+            nom_cliente: nom_cliente,
+            apellido_cliente: apellido_cliente,
+            RTN: RTN,
+            DNI_Cliente: DNI_Cliente,
+            tel_cliente: tel_cliente,
+        }
+        
+        })
+        res.json(clientes);
+    } catch (error) {
+        console.log(error)
+        next(error)
+    }
+}
 
