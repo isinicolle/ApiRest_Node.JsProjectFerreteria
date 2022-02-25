@@ -76,3 +76,29 @@ exports.eliminarUsuariocliente= async (req,res) =>{
            
     }
 }
+
+/*exports.modificarEstadoCliente = async(req,res) => {
+    const {id_usuarioCliente} =req.query;
+    const {estado} = req.body;
+
+    if(!id_usuarioCliente || !estado)
+    {
+        res.send("Envie datos completos");
+    }
+    else
+    {
+        try {
+            const buscarUser = await prisma.usuariosClientes.update({
+                where:
+                {
+                    id_usuarioCliente: Number(id_usuarioCliente),
+                },
+            })
+        }
+        catch(error)
+        {
+            next(error)
+        }
+    }
+
+}*/
