@@ -12,6 +12,33 @@ exports.listarDireccionesEnvio = async (req,res,next) =>{
     }
 }
 
+//buscar cliente
+exports.buscarDireccionEnvio = async (req,res,next) =>{
+    const {id_direccionEnvio} =req.query;
+
+    if(!id_direccionEnvio)
+    {
+        res.send("Envie el id de cliente");
+    }
+    else
+    {
+        try {
+            const buscarDireccionEnvio = await prisma.direccionesEnvio.findUnique(
+                {
+                    where:
+                    {
+                        id_direccionEnvio: Number(id_direccionEnvio),
+                    },//
+                })//
+                res.json(buscarDireccionEnvio)
+        } catch (error) {
+            next(error)
+        }
+       
+           
+    }
+}
+
 exports.insertarDireccionenvio = async (req,res,next) =>{
     try {
         const direccionesEnvio = await prisma.direccionesEnvio.create({
