@@ -109,7 +109,7 @@ exports.buscarId = async (req,res,next) =>{
    }
 };
 
-
+/*
 exports.buscarRastreo = async (req,res,next) =>{
     const {rastreo} =req.query;
     if(!rastreo)
@@ -139,3 +139,4 @@ exports.buscarRastreo = async (req,res,next) =>{
         }
     }
  };
+*/
