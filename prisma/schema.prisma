@@ -49,6 +49,7 @@ model Compras {
   id_empleado    Int
   isv            Float
   descuento      Float
+  Empleados      Empleados        @relation(fields: [id_empleado], references: [id_empleado], onUpdate: NoAction, map: "FK_Compras_Empleados")
   Proveedores    Proveedores      @relation(fields: [id_prov], references: [id_prov], onUpdate: NoAction, map: "FK_Compras_Proveedores")
   DetalleCompras DetalleCompras[]
 }
@@ -60,16 +61,17 @@ model Departamentos {
 }
 
 model DetalleCompras {
-  id_detalleCompra Int     @id(map: "PK_DetalleCompras") @default(autoincrement())
+  id_detalleCompra Int       @id(map: "PK_DetalleCompras") @default(autoincrement())
   id_producto      Int
   id_compra        Int
   precio           Float
   cantidad         Float
-  Compras          Compras @relation(fields: [id_compra], references: [id_compra], onUpdate: NoAction, map: "FK_DetalleCompras_Compras")
+  Compras          Compras   @relation(fields: [id_compra], references: [id_compra], onUpdate: NoAction, map: "FK_DetalleCompras_Compras")
+  Productos        Productos @relation(fields: [id_producto], references: [id_producto], onUpdate: NoAction, map: "FK_DetalleCompras_Productos")
 }
 
 model DetallesVentas {
-  id_detalleVenta Int       @id(map: "PK_DetallesVentas")
+  id_detalleVenta Int       @id(map: "PK_DetallesVentas") @default(autoincrement())
   id_producto     Int
   id_venta        Int
   precio          Float     @db.Money
@@ -92,7 +94,6 @@ model Empleados {
   id_empleado          Int                @id(map: "PK_Empleados") @default(autoincrement())
   nom_empleado         String             @db.NVarChar(50)
   apellido_empleado    String             @db.NVarChar(50)
-  correo_empleado      String             @db.NVarChar(50)
   telefono_empleado    String             @db.NVarChar(50)
   direccion_empleado   String             @db.NVarChar(50)
   id_ciudad            Int
@@ -101,6 +102,7 @@ model Empleados {
   Estado               Boolean
   Ciudades             Ciudades           @relation(fields: [id_ciudad], references: [id_ciudad], onUpdate: NoAction, map: "FK_Empleados_Ciudades")
   RolesEmpleados       RolesEmpleados     @relation(fields: [id_rol], references: [id_rol], onUpdate: NoAction, map: "FK_Empleados_RolesEmpleados")
+  Compras              Compras[]
   UsuarioEmpleados     UsuarioEmpleados[]
 }
 
@@ -147,6 +149,7 @@ model Productos {
   Categorias           Categorias       @relation(fields: [id_categoria], references: [id_categoria], onUpdate: NoAction, map: "FK_Productos_Categorias")
   Marcas               Marcas           @relation(fields: [id_marca], references: [id_marca], onUpdate: NoAction, map: "FK_Productos_Marcas")
   Proveedores          Proveedores      @relation(fields: [id_proveedor], references: [id_prov], onUpdate: NoAction, map: "FK_Productos_Proveedores")
+  DetalleCompras       DetalleCompras[]
   DetallesVentas       DetallesVentas[]
 }
 
@@ -155,9 +158,9 @@ model Proveedores {
   nom_prov       String      @db.NVarChar(50)
   telefono_prov  String      @db.NVarChar(50)
   correo_prov    String      @db.NVarChar(50)
-  direccion_prov String      @db.NChar(10)
+  direccion_prov String      @db.NVarChar(100)
   id_ciudad      Int
-  Estado         Int
+  Estado         Boolean
   Ciudades       Ciudades    @relation(fields: [id_ciudad], references: [id_ciudad], onUpdate: NoAction, map: "FK_Proveedores_Ciudades")
   Compras        Compras[]
   Productos      Productos[]
@@ -182,7 +185,9 @@ model sysdiagrams {
 model UsuarioEmpleados {
   id_usuarioEmpleado   Int       @id(map: "PK_UsuarioEmpleados") @default(autoincrement())
   nom_usuarioEmpleado  String    @db.NVarChar(50)
+  estado               Boolean
   contrasenia_empleado String    @db.NVarChar(250)
+  correo_empleado      String    @db.NVarChar(50)
   id_empleado          Int
   Empleados            Empleados @relation(fields: [id_empleado], references: [id_empleado], onUpdate: NoAction, map: "FK_UsuarioEmpleados_Empleados")
 }
