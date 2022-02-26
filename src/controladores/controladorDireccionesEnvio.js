@@ -78,3 +78,42 @@ exports.eliminarDireccionEnvio= async (req,res) =>{
     }
 }
 
+exports.actualizarDireccionEnvio= async (req,res) =>{
+    const {id_direccionEnvio} =req.query;
+    const {direccion,id_ciudad,id_usuarioCliente,direccion_opcional} = req.body;
+
+
+    if(!id_direccionEnvio)
+    {
+        res.send("Envie el id de la direccion Envio");
+    }
+    else
+    {
+        try {
+      
+            const direccionEnvio = await prisma.direccionesEnvio.update({
+            where:
+            {
+                id_direccionEnvio: Number(id_direccionEnvio),
+            },
+            data: 
+            {
+                direccion : direccion,
+                id_ciudad: id_ciudad,
+                id_usuarioCliente: id_usuarioCliente,
+                direccion_opcional: direccion_opcional,
+            }
+            
+            })
+            res.json(direccionEnvio);
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+   
+}
+
+
+
+

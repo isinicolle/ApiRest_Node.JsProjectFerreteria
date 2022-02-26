@@ -7,5 +7,6 @@ router.get('/listarDireccionesEnvio', controladorDireccionesEnvio.listarDireccio
 router.get('/buscarDireccionesEnvio', controladorDireccionesEnvio.buscarDireccionEnvio);
 router.post('/insertarDireccionesEnvio', controladorDireccionesEnvio.insertarDireccionenvio);
 router.delete('/eliminarDireccionesEnvio', controladorDireccionesEnvio.eliminarDireccionEnvio);
+router.put('/actualizarDireccionEnvio', controladorDireccionesEnvio.actualizarDireccionEnvio);
 
 module.exports=router; 
