@@ -25,3 +25,12 @@ app.listen(6001, ()=>
 {
     console.log("Servidor iniciado en el puerto 6001");
 });
+
+//ENVIOS
+app.use('/envios', require('./rutas/rutaEnvios'));
+
+//VENTAS
+app.use('/ventas', require('./rutas/rutasVentas'));
+
+//VENTAS DETALLE
+app.use('/ventasdetalle', require('./rutas/rutasDetalleVentas'));
