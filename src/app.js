@@ -12,7 +12,7 @@ app.use(express.json());
 
 app.set('json spaces',2);
 
-app.use('/api/', rutas);
+//app.use('/api/', rutas);
 app.use('/api/proveedores/',rutaProveedor);
 app.use('/api/departamentos/',rutaDepartamento);
 app.use('/api/compra/',rutaCompra);
