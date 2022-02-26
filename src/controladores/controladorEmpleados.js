@@ -69,7 +69,7 @@ exports.actualizarEmpleados = async (req, res) => {
     fnacimiento_empleado= parseInt(fnacimiento_empleado);
       id_ciudad= parseInt(id_ciudad);
     Estado=parseInt(Estado);
-    if (!await buscarProveedor(idProveedor))
+    if (!await buscarEmpleado(idProveedor))
     {
         res.send("Este proveedor no existe")
     }
@@ -96,4 +96,17 @@ exports.actualizarEmpleados = async (req, res) => {
     }
   };
   
+
+  async function buscarEmpleado(id_empleado)
+{
+  const buscar =await prisma.empleados.findMany({where:{
+    id_empleado:id_empleado
+}});
+    if (buscar.length>=1)
+    {
+        return true; //retorna si no existe
+    }
+    else return false; //retorna si existe
+
+};
 
