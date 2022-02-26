@@ -60,3 +60,40 @@ exports.eliminarEmpleado= async (req,res) =>{
     }
 }
 
+exports.actualizarEmpleados = async (req, res) => {
+    let { id_empleado } = req.query;
+    const { nom_empleado , apellido_empleado,correo_empleado,telefono_empleado, direccion_empleado} = req.body;
+    let {Estado,id_ciudad,id_rol,fnacimiento_empleado} = req.body;
+    id_empleado=parseInt(id_empleado);
+    id_rol= parseInt(id_rol);
+    fnacimiento_empleado= parseInt(fnacimiento_empleado);
+      id_ciudad= parseInt(id_ciudad);
+    Estado=parseInt(Estado);
+    if (!await buscarProveedor(idProveedor))
+    {
+        res.send("Este proveedor no existe")
+    }
+    else{
+      await prisma.empleados.update({
+          where:{id_empleado:id_empleado},
+      data:{
+        nom_empleado:nom_empleado|| undefined,
+        apellido_empleado:apellido_empleado|| undefined,
+        correo_empleado:correo_empleado|| undefined,
+        telefono_empleado:telefono_empleado|| undefined,
+         direccion_empleado:direccion_empleado|| undefined,
+         id_ciudad:id_ciudad|| undefined,
+         id_rol:id_rol|| undefined,
+         fnacimiento_empleado:fnacimiento_empleado|| undefined,
+        Estado:Estado || undefined
+      }}).then((data)=>{
+          console.log(data);
+          res.send("Se actualizaron los datos");
+      }).catch((error)=>{
+          res.send("Error de datos");
+          console.log(error);
+      });
+    }
+  };
+  
+
