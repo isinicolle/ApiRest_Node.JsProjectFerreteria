@@ -13,9 +13,21 @@ exports.listarEmpleados = async (req,res,next) =>{
 }
 
 exports.insertarEmpleados = async (req,res,next) =>{
+    
     try {
+        const {nom_empleado , apellido_empleado,correo_empleado,telefono_empleado, direccion_empleado,id_ciudad,id_rol,fnacimiento_empleado,Estado}= req.body;
         const empleados = await prisma.empleados.create({
-            data: req.body,
+          data:{ nom_empleado:nom_empleado,
+           apellido_empleado:apellido_empleado,
+           correo_empleado:correo_empleado,
+           telefono_empleado:telefono_empleado,
+            direccion_empleado:direccion_empleado,
+            Ciudades:{connect:{id_ciudad:id_ciudad}},
+            RolesEmpleados:{connect:{id_rol:id_rol}},
+            fnacimiento_empleado:fnacimiento_empleado,
+           Estado:Estado
+        },
+        include:{Ciudades:true,RolesEmpleados:true}
         })
         res.json(empleados);
     } catch (error) {
