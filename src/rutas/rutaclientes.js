@@ -8,6 +8,7 @@ router.get('/buscarCliente', controladorCliente.buscarCliente);
 router.post('/insertarCliente', controladorCliente.insertarcliente);
 router.delete('/eliminarCliente', controladorCliente.eliminarCliente);
 router.put('/actualizarCliente', controladorCliente.actualizarCliente);
+router.put('/actualizarEstadoCliente', controladorCliente.actualizarEstadoCliente);
 
 
 module.exports=router; 
