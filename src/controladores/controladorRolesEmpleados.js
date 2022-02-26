@@ -27,3 +27,27 @@ exports.insertarRolesEmpleados = async (req,res,next) =>{
         next(error);
     }
 }
+
+exports.eliminarRolesEmpleados= async (req,res) =>{
+    const {id_rol} =req.query;
+
+    if(!id_rol)
+    {
+        res.send("Envie el id de registro");
+    }
+    else
+    {
+        try {
+            const eliminarRolEmpleado = await prisma.rolesEmpleados.delete(
+                {
+                    where:
+                    {
+                        id_rol: Number(id_rol),
+                    },
+                })
+                res.json(eliminarRolEmpleado)
+        } catch (error) {
+            next(error)
+        }      
+    }
+}

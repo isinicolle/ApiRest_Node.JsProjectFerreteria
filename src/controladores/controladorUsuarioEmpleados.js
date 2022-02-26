@@ -30,3 +30,28 @@ exports.insertarUsuarioEmpleados = async (req,res,next) =>{
         next(error);
     }
 }
+
+
+exports.eliminarUsuarioEmpleados= async (req,res) =>{
+    const {id_usuarioEmpleado} =req.query;
+
+    if(!id_usuarioEmpleado)
+    {
+        res.send("Envie el id de registro");
+    }
+    else
+    {
+        try {
+            const eliminarUsuarioEmpleado = await prisma.usuarioEmpleados.delete(
+                {
+                    where:
+                    {
+                        id_usuarioEmpleado: Number(id_usuarioEmpleado),
+                    },
+                })
+                res.json(eliminarUsuarioEmpleado)
+        } catch (error) {
+            next(error)
+        }      
+    }
+}

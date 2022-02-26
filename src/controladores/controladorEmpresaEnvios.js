@@ -33,3 +33,28 @@ exports.insertarEmpresaEnvios = async (req,res,next) =>{
         next(error);
     }
 }
+
+
+exports.eliminarEmpresaEnvios= async (req,res) =>{
+    const {id_empresaEnvio} =req.query;
+
+    if(!id_empresaEnvio)
+    {
+        res.send("Envie el id de registro");
+    }
+    else
+    {
+        try {
+            const eliminarEmpresaEnvios = await prisma.empresasEnvio.delete(
+                {
+                    where:
+                    {
+                        id_empresaEnvio: Number(id_empresaEnvio),
+                    },
+                })
+                res.json(eliminarEmpresaEnvios)
+        } catch (error) {
+            next(error)
+        }      
+    }
+}

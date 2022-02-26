@@ -35,3 +35,28 @@ exports.insertarEmpleados = async (req,res,next) =>{
         next(error);
     }
 }
+
+exports.eliminarEmpleado= async (req,res) =>{
+    const {id_empleado} =req.query;
+
+    if(!id_empleado)
+    {
+        res.send("Envie el id de registro");
+    }
+    else
+    {
+        try {
+            const eliminarEmpleado = await prisma.empleados.delete(
+                {
+                    where:
+                    {
+                        id_empleado: Number(id_empleado),
+                    },
+                })
+                res.json(eliminarEmpleado)
+        } catch (error) {
+            next(error)
+        }      
+    }
+}
+
