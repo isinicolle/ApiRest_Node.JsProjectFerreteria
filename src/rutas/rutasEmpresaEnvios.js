@@ -5,7 +5,7 @@ const router = Router();
 
 router.get('/listarEmpresaEnvios', controladorEmpresaEnvios.listarEmpresaEnvios);
 //router.get('/buscarEmpresaEnvios', controladorEmpresaEnvios.buscarEmpresaEnvios);
-//router.post('/insertarEmpresaEnvios', controladorEmpresaEnvios.insertarEmpresaEnvios);
+router.post('/insertarEmpresaEnvios', controladorEmpresaEnvios.insertarEmpresaEnvios);
 //router.delete('/eliminarEmpresaEnvios', controladorEmpresaEnvios.eliminarEmpresaEnvios);
 //router.put('/actualizarEmpresaEnvios', controladorEmpresaEnvios.actualizarEmpresaEnvios);
 

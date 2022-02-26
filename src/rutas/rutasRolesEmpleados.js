@@ -5,7 +5,7 @@ const router = Router();
 
 router.get('/listarRolesEmpleados', controladorRolesEmpleados.listarRolesEmpleados);
 //router.get('/buscarRolesEmpleados', controladorRolesEmpleados.buscarRolesEmpleados);
-//router.post('/insertarRolesEmpleados', controladorRolesEmpleados.insertarRolesEmpleados);
+router.post('/insertarRolesEmpleados', controladorRolesEmpleados.insertarRolesEmpleados);
 //router.delete('/eliminarRolesEmpleados', controladorRolesEmpleados.eliminarRolesEmpleados);
 //router.put('/actualizarRolesEmpleados', controladorRolesEmpleados.actualizarRolesEmpleados);
 

@@ -11,3 +11,19 @@ exports.listarRolesEmpleados = async (req,res,next) =>{
         next(error);
     }
 }
+
+exports.insertarRolesEmpleados = async (req,res,next) =>{
+    
+    try {
+        const {descripcion}= req.body;
+        const rolesEmpleados = await prisma.rolesEmpleados.create({
+          data:{ descripcion:descripcion,
+           
+        },
+        })
+        res.json(rolesEmpleados);
+    } catch (error) {
+        console.log(error)
+        next(error);
+    }
+}
