@@ -24,14 +24,6 @@ app.use('/api/empleados/',require('./rutas/rutasEmpleados'));
 app.use('/api/usuarioempleados/',require('./rutas/rutasUsuarioEmpleados'));
 app.use('/api/rolesempleados/',require('./rutas/rutasRolesEmpleados'));
 app.use('/api/empresaenvios/',require('./rutas/rutasEmpresaEnvios'));
-
-
-//definir el puerto que se usara en el servidor
-app.listen(6001, ()=>
-{
-    console.log("Servidor iniciado en el puerto 6001");
-});
-
 //ENVIOS
 app.use('/envios', require('./rutas/rutaEnvios'));
 
@@ -40,3 +32,10 @@ app.use('/ventas', require('./rutas/rutasVentas'));
 
 //VENTAS DETALLE
 app.use('/ventasdetalle', require('./rutas/rutasDetalleVentas'));
+
+
+//definir el puerto que se usara en el servidor
+app.listen(6001, ()=>
+{
+    console.log("Servidor iniciado en el puerto 6001");
+});
