@@ -58,3 +58,49 @@ exports.eliminarEmpresaEnvios= async (req,res) =>{
         }      
     }
 }
+
+exports.actualizarEmpresaEnvios = async (req, res) => {
+    let { id_empresaEnvio } = req.query;
+    const { nombre_empresa,direccion_empresa,telefono_empresa,correo_empresa}= req.body;
+    let {estado,id_ciudad} = req.body;
+    id_empresaEnvio=parseInt(id_empresaEnvio);
+      id_ciudad= parseInt(id_ciudad);
+    estado=parseInt(estado);
+    if (!await buscarEmpresaEnvios(id_empresaEnvio))
+    {
+        res.send("Esta empresa de envios no existe")
+    }
+    else{
+      await prisma.empresasEnvio.update({
+          where:{id_empresaEnvio:id_empresaEnvio},
+      data:{
+        nombre_empresa:nombre_empresa || undefined,   
+        direccion_empresa:direccion_empresa || undefined,
+        telefono_empresa:telefono_empresa || undefined,        
+        id_ciudad:id_ciudad|| undefined,
+        estado:estado || undefined,
+        correo_empresa:correo_empresa || undefined
+      }}).then((data)=>{
+          console.log(data);
+          res.send("Se actualizaron los datos");
+      }).catch((error)=>{
+          res.send("Error de datos");
+          console.log(error);
+      });
+    }
+  };
+
+
+  async function buscarEmpresaEnvios(id_empresaEnvio)
+  {
+    const buscar =await prisma.empresasEnvio.findMany({where:{
+      id_empresaEnvio:id_empresaEnvio
+  }});
+      if (buscar.length>=1)
+      {
+          return true; //retorna si no existe
+      }
+      else return false; //retorna si existe
+  
+  };
+  

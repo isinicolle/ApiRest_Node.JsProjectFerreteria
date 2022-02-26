@@ -69,9 +69,9 @@ exports.actualizarEmpleados = async (req, res) => {
     fnacimiento_empleado= parseInt(fnacimiento_empleado);
       id_ciudad= parseInt(id_ciudad);
     Estado=parseInt(Estado);
-    if (!await buscarEmpleado(idProveedor))
+    if (!await buscarEmpleado(id_empleado))
     {
-        res.send("Este proveedor no existe")
+        res.send("Este empleado no existe")
     }
     else{
       await prisma.empleados.update({

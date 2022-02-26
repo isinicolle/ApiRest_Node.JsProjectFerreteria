@@ -7,6 +7,6 @@ router.get('/listarUsuarioEmpleados', controladorUsuarioEmpleados.listarUsuarioE
 //router.get('/buscarUsuarioEmpleados', controladorUsuarioEmpleados.buscarUsuarioEmpleados);
 router.post('/insertarUsuarioEmpleados', controladorUsuarioEmpleados.insertarUsuarioEmpleados);
 router.delete('/eliminarUsuarioEmpleados', controladorUsuarioEmpleados.eliminarUsuarioEmpleados);
-//router.put('/actualizarUsuarioEmpleados', controladorUsuarioEmpleados.actualizarUsuarioEmpleados);
+router.put('/actualizarUsuarioEmpleados', controladorUsuarioEmpleados.actualizarUsuarioEmpleados);
 
 module.exports=router; 

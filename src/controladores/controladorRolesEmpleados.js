@@ -51,3 +51,43 @@ exports.eliminarRolesEmpleados= async (req,res) =>{
         }      
     }
 }
+
+
+exports.actualizarRolesEmpleados = async (req, res) => {
+    let { id_rol } = req.query;
+    const { descripcion} = req.body;
+    id_rol=parseInt(id_rol);
+    
+    if (!await buscarRol(id_rol))
+    {
+        res.send("Este rol no existe")
+    }
+    else{
+      await prisma.rolesEmpleados.update({
+          where:{id_rol:id_rol},
+      data:{
+        descripcion:descripcion|| undefined,
+  
+      }}).then((data)=>{
+          console.log(data);
+          res.send("Se actualizaron los datos");
+      }).catch((error)=>{
+          res.send("Error de datos");
+          console.log(error);
+      });
+    }
+  };
+  
+
+  async function buscarRol(id_rol)
+{
+  const buscar =await prisma.rolesEmpleados.findMany({where:{
+    id_rol:id_rol
+}});
+    if (buscar.length>=1)
+    {
+        return true; //retorna si no existe
+    }
+    else return false; //retorna si existe
+
+};

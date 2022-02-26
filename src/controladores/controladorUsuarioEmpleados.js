@@ -55,3 +55,44 @@ exports.eliminarUsuarioEmpleados= async (req,res) =>{
         }      
     }
 }
+
+exports.actualizarUsuarioEmpleados = async (req, res) => {
+    let { id_usuarioEmpleado } = req.query;
+    const {nom_usuarioEmpleado ,contrasenia_empleado }= req.body;
+    let {id_empleado} = req.body;
+    id_usuarioEmpleado=parseInt(id_usuarioEmpleado);
+      id_empleado= parseInt(id_empleado);
+    if (!await buscarUsuarioEmpleado(id_usuarioEmpleado))
+    {
+        res.send("Este usuario no existe")
+    }
+    else{
+      await prisma.usuarioEmpleados.update({
+          where:{id_usuarioEmpleado:id_usuarioEmpleado},
+      data:{
+        nom_usuarioEmpleado:nom_usuarioEmpleado || undefined,
+          contrasenia_empleado:contrasenia_empleado || undefined,
+          id_empleado:id_empleado || undefined,
+      }}).then((data)=>{
+          console.log(data);
+          res.send("Se actualizaron los datos");
+      }).catch((error)=>{
+          res.send("Error de datos");
+          console.log(error);
+      });
+    }
+  };
+
+
+  async function buscarUsuarioEmpleado(id_usuarioEmpleado)
+  {
+    const buscar =await prisma.usuarioEmpleados.findMany({where:{
+      id_usuarioEmpleado:id_usuarioEmpleado
+  }});
+      if (buscar.length>=1)
+      {
+          return true; //retorna si no existe
+      }
+      else return false; //retorna si existe
+  
+  };

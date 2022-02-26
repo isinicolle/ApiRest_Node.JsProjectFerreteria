@@ -7,6 +7,6 @@ router.get('/listarRolesEmpleados', controladorRolesEmpleados.listarRolesEmplead
 //router.get('/buscarRolesEmpleados', controladorRolesEmpleados.buscarRolesEmpleados);
 router.post('/insertarRolesEmpleados', controladorRolesEmpleados.insertarRolesEmpleados);
 router.delete('/eliminarRolesEmpleados', controladorRolesEmpleados.eliminarRolesEmpleados);
-//router.put('/actualizarRolesEmpleados', controladorRolesEmpleados.actualizarRolesEmpleados);
+router.put('/actualizarRolesEmpleados', controladorRolesEmpleados.actualizarRolesEmpleados);
 
 module.exports=router; 
