@@ -1,6 +1,11 @@
 const {PrismaClient} = require('@prisma/client') ;
 const prisma = new PrismaClient();
 
+const bcrypt = require ('bcrypt');
+const jwt = require('jsonwebtoken');
+const {CLIENT_URL} = process.env;
+const sendMail = require('./sendMail');
+
 
 exports.listarUsuarioCliente = async (req,res,next) =>{
     try {
@@ -39,11 +44,65 @@ exports.buscarUsuarioCliente = async (req,res,next) =>{
 }
 
 exports.insertarUsuariocliente = async (req,res,next) =>{
+    const {id_usuarioCliente} =req.query;
+    const {nombre_usuario,contraenia_usuario,id_cliente,correo_usuario} = req.body;
+
+
     try {
-        const clientes = await prisma.usuariosClientes.create({
+      /*  const clientes = await prisma.usuariosClientes.create({
             data: req.body,
         })
         res.json(clientes);
+*/
+
+        if(!nombre_usuario || !contraenia_usuario || !id_cliente || !correo_usuario)
+        {
+            res.send('No mandar datos vacios');
+        }
+        else
+        {
+            if(contraenia_usuario.length < 6)
+            {
+                res.send('La clave debe ser menor a 6 caracteres');
+            }
+            else
+            {
+                const passwordHash = await bcrypt.hash(contraenia_usuario,12)
+
+                const clientes = await prisma.usuariosClientes.create({
+            data: 
+            {
+                nombre_usuario: nombre_usuario,
+                contraenia_usuario: passwordHash,
+                id_cliente: id_cliente,
+                correo_usuario: correo_usuario,
+            }
+                })
+            
+            const createActivationToken = (payload) => 
+            {
+                return jwt.sign(payload, process.env.ACTIVATION_TOKEN_SECRET, {expiresIn: '5m'})
+            }
+            const createAccesToken = (payload) => 
+            {
+                return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '15m'})
+            }
+
+            const createRefreshToken = (payload) => 
+            {
+                return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '7d'})
+            }
+
+
+            const activacion_token = createActivationToken(clientes)
+            const url = `${CLIENT_URL}/user/activate/${activacion_token}`
+            sendMail(correo_usuario,url)
+            //
+            }
+         
+        }
+   
+       
     } catch (error) {
         console.log(error)
         next(error);
@@ -145,5 +204,4 @@ exports.actualizarEstadoCliente= async (req,res) =>{
     }
    
 }
-
 
