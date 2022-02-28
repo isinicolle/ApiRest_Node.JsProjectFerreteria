@@ -6,8 +6,14 @@ const htmlt = `   <div style="max-width: 700px; margin:auto; border: 10px solid 
 </div>`
 
 var transport = nodemailer.createTransport({
-    host: "smtp.mailtrap.io",
+    /*host: "smtp.mailtrap.io",
     port: 2525,
+    auth: {
+      user: "51d6cd77aa8f0d",
+      pass: "18832c1078e9b4"
+    }*/
+    host: "smtp.gmail.com",
+    port: 465,
     auth: {
       user: "51d6cd77aa8f0d",
       pass: "18832c1078e9b4"
