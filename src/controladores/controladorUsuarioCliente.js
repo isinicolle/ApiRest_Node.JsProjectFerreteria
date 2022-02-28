@@ -81,26 +81,20 @@ exports.insertarUsuariocliente = async (req,res,next) =>{
                 estado : true,
             }
                 })
-        console.log({contraenia_usuario,passwordHash});
-            res.json(clientes);
-          /*  const createActivationToken = (payload) => 
-            {
-                return jwt.sign(payload, process.env.ACTIVATION_TOKEN_SECRET, {expiresIn: '5m'})
-            }
-            const createAccesToken = (payload) => 
-            {
-                return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '15m'})
-            }
+       
+                console.log({contraenia_usuario,passwordHash});
+        
+             //   res.json(clientes);
 
-            const createRefreshToken = (payload) => 
-            {
-                return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '7d'})
-            }*/
+        
+                const activacion_token = createActivationToken(clientes)
+                //res.json(activacion_token);
+            
+                const url = `${CLIENT_URL}/user/activate/${activacion_token}`
+                sendMail(correo_usuario,url)
 
-
-            const activacion_token = createActivationToken(clientes)
-            //const url = `${CLIENT_URL}/user/activate/${activacion_token}`
-            //sendMail(correo_usuario,url)
+            res.json("Registro logrado con exito revise su correo");
+            
             //
             }
          
@@ -113,6 +107,23 @@ exports.insertarUsuariocliente = async (req,res,next) =>{
     }
 }
 
+
+const createActivationToken = (payload) => 
+{
+    return jwt.sign(payload, process.env.ACTIVATION_TOKEN_SECRET, {expiresIn: '5m'})
+}
+
+const createAccesToken = (payload) => 
+{
+    return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '15m'})
+}
+
+const createRefreshToken = (payload) => 
+{
+    return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '7d'})
+}
+
+//elimianr usuario del cliente
 exports.eliminarUsuariocliente= async (req,res) =>{
     const {id_usuarioCliente} =req.query;
 

@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer')
 const {google} = require('googleapis');
-const { oauth2 } = require('googleapis/build/src/apis/oauth2');
 const {OAuth2} = google.auth;
+const OAUTH_PLAYGROUND = 'https://developers.google.com/oauthplayground/'
 
 
 
@@ -16,7 +16,7 @@ const oAuth2Client = new OAuth2(
     MAILING_SERVICE_CLIENT_ID ,
     MAILING_SERVICE_CLIENT_SECRET,
     MAILING_SERVICE_REFRESH_TOKEN,
-    SENDER_EMAIL_ADDRESS
+    OAUTH_PLAYGROUND
 )
 
 const sendMail = (to,url) => {
@@ -34,7 +34,7 @@ const sendMail = (to,url) => {
             clientId: MAILING_SERVICE_CLIENT_ID,
             clientSecret: MAILING_SERVICE_CLIENT_SECRET,
             refreshToken: MAILING_SERVICE_REFRESH_TOKEN,
-            accessToken
+            accesToken
         }
     })
 
@@ -44,13 +44,15 @@ const sendMail = (to,url) => {
         subject: "Ferreteria Ferretear",
         html: `   <div style="max-width: 700px; margin:auto; border: 10px solid #ddd;">
         <h2 style="text-align: center; text-transform: uppercase; color: teal;">GRACIAS POR PREFERIR NUESTRO SERVICIO</h2>
-    <p>Se a creado exitosamente su cuenta!</p>    
+    <p>Se a creado exitosamente su cuenta! haga click para validarlo</p>    
+    <a href="${url}"></a>
+        <div>${url}</div>
     </div>`
 
     }
 
-    smtpTransport.sendMail(mailOptions, (error,infor) => {
-        if(error) return error;
+    smtpTransport.sendMail(mailOptions, (err,infor) => {
+        if(err) return err;
         return infor
     })
 }
