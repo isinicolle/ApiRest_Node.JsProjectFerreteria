@@ -64,22 +64,26 @@ exports.insertarUsuariocliente = async (req,res,next) =>{
             if(contraenia_usuario.length < 6)
             {
                 res.send('La clave debe ser menor a 6 caracteres');
-            }
+            } 
             else
             {
+               
+
                 const passwordHash = await bcrypt.hash(contraenia_usuario,12)
 
                 const clientes = await prisma.usuariosClientes.create({
             data: 
             {
                 nombre_usuario: nombre_usuario,
-                contraenia_usuario: passwordHash,
+                contraenia_usuario: contraenia_usuario,
                 id_cliente: id_cliente,
                 correo_usuario: correo_usuario,
+                estado : true,
             }
                 })
-            
-            const createActivationToken = (payload) => 
+        console.log({contraenia_usuario,passwordHash});
+            res.json(clientes);
+          /*  const createActivationToken = (payload) => 
             {
                 return jwt.sign(payload, process.env.ACTIVATION_TOKEN_SECRET, {expiresIn: '5m'})
             }
@@ -91,12 +95,12 @@ exports.insertarUsuariocliente = async (req,res,next) =>{
             const createRefreshToken = (payload) => 
             {
                 return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '7d'})
-            }
+            }*/
 
 
             const activacion_token = createActivationToken(clientes)
-            const url = `${CLIENT_URL}/user/activate/${activacion_token}`
-            sendMail(correo_usuario,url)
+            //const url = `${CLIENT_URL}/user/activate/${activacion_token}`
+            //sendMail(correo_usuario,url)
             //
             }
          
@@ -141,7 +145,7 @@ exports.actualizarCliente= async (req,res) =>{
     const {nombre_usuario,contraenia_usuario,id_cliente,correo_usuario} = req.body;
 
 
-    if(!id_cliente)
+    if(!id_usuarioCliente)
     {
         res.send("Envie el id del usuario del cliente");
     }
@@ -169,6 +173,7 @@ exports.actualizarCliente= async (req,res) =>{
             next(error)
         }
     }
+   
    
 }
 
