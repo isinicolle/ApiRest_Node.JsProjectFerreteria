@@ -56,6 +56,7 @@ exports.loginUsuarioCliente = async (req,res,next) =>{
                         nombre_usuario: nombre_usuario,
                     },//
                 })//
+                if(buscarUsuarioCliente!=null){
                 if(contraenia_usuario==buscarUsuarioCliente.contraenia_usuario){
                     if(buscarUsuarioCliente.estado==true){
                         res.json(buscarUsuarioCliente);
@@ -67,9 +68,13 @@ exports.loginUsuarioCliente = async (req,res,next) =>{
                 else{
                     res.send("Usuario o contraseña incorrecto")
                 }
+            }
+            else{
+                res.send("Usuario o contraseña incorrecto")
+            }
         } catch (error) {
-            next(error),
-            res.send("Usuario o contraseña incorrecto");
+            console.log(error);
+            res.send("Ha ocurrido un error inesperado");
         }
      
     }
