@@ -1,6 +1,12 @@
 const {PrismaClient} = require('@prisma/client') ;
 const prisma = new PrismaClient();
 
+const bcrypt = require ('bcrypt');
+
+
+
+
+
 
 exports.listarUsuarioCliente = async (req,res,next) =>{
     try {
@@ -39,17 +45,64 @@ exports.buscarUsuarioCliente = async (req,res,next) =>{
 }
 
 exports.insertarUsuariocliente = async (req,res,next) =>{
+
+    const {nombre_usuario,contraenia_usuario,id_cliente,correo_usuario} = req.body;
+
+
     try {
-        const clientes = await prisma.usuariosClientes.create({
+      /*  const clientes = await prisma.usuariosClientes.create({
             data: req.body,
         })
         res.json(clientes);
+*/
+
+        if(!nombre_usuario || !contraenia_usuario || !id_cliente || !correo_usuario)
+        {
+            res.send('No mandar datos vacios');
+        }
+        else
+        {
+            if(contraenia_usuario.length < 6)
+            {
+                res.send('La clave debe ser menor a 6 caracteres');
+            } 
+            else
+            {
+               
+
+            const passwordHash = await bcrypt.hash(contraenia_usuario,12)
+
+            const clientes = await prisma.usuariosClientes.create({
+            data: 
+            {
+                nombre_usuario: nombre_usuario,
+                contraenia_usuario: passwordHash,
+                id_cliente: id_cliente,
+                correo_usuario: correo_usuario,
+                estado : true,
+            }
+                })
+       
+                console.log({contraenia_usuario,passwordHash});
+        
+    
+                res.json("Registro logrado con exito");
+            
+            //
+            }
+         
+        }
+   
+       
     } catch (error) {
         console.log(error)
         next(error);
     }
 }
 
+
+
+//elimianr usuario del cliente
 exports.eliminarUsuariocliente= async (req,res) =>{
     const {id_usuarioCliente} =req.query;
 
@@ -82,14 +135,14 @@ exports.actualizarCliente= async (req,res) =>{
     const {nombre_usuario,contraenia_usuario,id_cliente,correo_usuario} = req.body;
 
 
-    if(!id_cliente)
+    if(!id_usuarioCliente)
     {
         res.send("Envie el id del usuario del cliente");
     }
     else
     {
         try {
-      
+            const passwordHash = await bcrypt.hash(contraenia_usuario,12)
             const clientes = await prisma.usuariosClientes.update({
             where:
             {
@@ -98,18 +151,20 @@ exports.actualizarCliente= async (req,res) =>{
             data: 
             {
                 nombre_usuario: nombre_usuario,
-                contraenia_usuario: contraenia_usuario,
+                contraenia_usuario: passwordHash,
                 id_cliente: id_cliente,
                 correo_usuario: correo_usuario,
             }
             
             })
+            
             res.json(clientes);
         } catch (error) {
             console.log(error)
             next(error)
         }
     }
+   
    
 }
 
@@ -147,3 +202,58 @@ exports.actualizarEstadoCliente= async (req,res) =>{
 }
 
 
+
+exports.recuperarContrasena = async (req, res, next)=>
+{   
+    
+    const {correo_usuario} =req.query;
+    var {contraenia_usuario} = req.body;
+
+
+    if(!correo_usuario)
+    {
+        res.send("Envie el correo usuario del cliente");
+    }
+    else
+    {
+
+        contraenia_usuario = (Math.floor(Math.random() * (99999 - 11111)) + 11111).toString();
+        const passwordHash = await bcrypt.hash(contraenia_usuario,12)
+
+        try {
+            
+            var buscarUser = await prisma.usuariosClientes.findFirst({
+             where:
+            {
+                correo_usuario: correo_usuario,
+            },
+            })
+            
+           
+            const clientes = await prisma.usuariosClientes.update({
+                where:
+                {
+                      id_usuarioCliente: Number(buscarUser.id_usuarioCliente),
+                },
+                data: 
+                {
+                    contraenia_usuario: passwordHash,
+                }
+                
+
+            })
+
+
+
+
+            res.json("Correo: "+clientes.correo_usuario+" Clave nueva: "+contraenia_usuario+" Ingrese nuevamente para cambiar su clave");
+
+
+
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+   
+};
