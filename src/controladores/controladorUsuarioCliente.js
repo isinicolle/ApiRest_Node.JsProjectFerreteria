@@ -2,6 +2,7 @@ const {PrismaClient} = require('@prisma/client') ;
 const prisma = new PrismaClient();
 
 const bcrypt = require ('bcrypt');
+const emailer = require('../configuraciones/emailer');
 
 
 
@@ -85,7 +86,7 @@ exports.insertarUsuariocliente = async (req,res,next) =>{
        
                 console.log({contraenia_usuario,passwordHash});
         
-    
+                emailer.sendMail(clientes.correo_usuario);
                 res.json("Registro logrado con exito");
             
             //
