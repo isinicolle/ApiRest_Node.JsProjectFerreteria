@@ -93,7 +93,7 @@ exports.insertarUsuariocliente = async (req,res,next) =>{
                 const url = `${CLIENT_URL}/user/activate/${activacion_token}`
                 sendMail(correo_usuario,url)
 
-            res.json("Registro logrado con exito revise su correo");
+                res.json("Registro logrado con exito revise su correo: "+correo_usuario);
             
             //
             }
