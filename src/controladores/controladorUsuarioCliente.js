@@ -38,6 +38,43 @@ exports.buscarUsuarioCliente = async (req,res,next) =>{
     }
 }
 
+
+exports.loginUsuarioCliente = async (req,res,next) =>{
+    const {nombre_usuario,contraenia_usuario} =req.body;
+
+    if(!nombre_usuario || !contraenia_usuario)
+    {
+        res.send("Debe ingresar todos los datos");
+    }
+    else
+    {
+        try {
+            const buscarUsuarioCliente = await prisma.usuariosClientes.findFirst(
+                {
+                    where:
+                    {
+                        nombre_usuario: nombre_usuario,
+                    },//
+                })//
+                if(contraenia_usuario==buscarUsuarioCliente.contraenia_usuario){
+                    if(buscarUsuarioCliente.estado==true){
+                        res.json(buscarUsuarioCliente);
+                    }
+                    else{
+                        res.send("Este usuario esta inactivo, comunicarse con servicio al cliente")
+                    }
+                }
+                else{
+                    res.send("Usuario o contraseña incorrecto")
+                }
+        } catch (error) {
+            next(error),
+            res.send("Usuario o contraseña incorrecto");
+        }
+     
+    }
+}
+
 exports.insertarUsuariocliente = async (req,res,next) =>{
     try {
         const clientes = await prisma.usuariosClientes.create({

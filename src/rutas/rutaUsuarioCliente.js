@@ -9,4 +9,5 @@ router.post('/insertarUsuarioCliente', controladorUsuarioCliente.insertarUsuario
 router.delete('/eliminarUsuarioCliente', controladorUsuarioCliente.eliminarUsuariocliente);
 router.put('/actualizarUsuarioCliente', controladorUsuarioCliente.actualizarCliente);
 router.put('/actualizarUsuarioEstadoCliente', controladorUsuarioCliente.actualizarEstadoCliente);
+router.get('/loginUsuarioCliente', controladorUsuarioCliente.loginUsuarioCliente);
 module.exports=router; 
