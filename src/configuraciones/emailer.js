@@ -18,7 +18,7 @@ var transport = nodemailer.createTransport({
  {
    const info = await transport.sendMail(
     {
-        from: '"Fred Foo 👻" <foo@example.com>', // sender address
+        from: 'ferreteriaferretear@gmail.com', // sender address
         to: `${correo}`, 
         subject: "Ferreteria Ferretear",
         html: htmlt,
