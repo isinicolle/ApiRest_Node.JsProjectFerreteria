@@ -9,4 +9,5 @@ router.post('/insertarUsuarioCliente', controladorUsuarioCliente.insertarUsuario
 router.delete('/eliminarUsuarioCliente', controladorUsuarioCliente.eliminarUsuariocliente);
 router.put('/actualizarUsuarioCliente', controladorUsuarioCliente.actualizarCliente);
 router.put('/actualizarUsuarioEstadoCliente', controladorUsuarioCliente.actualizarEstadoCliente);
+router.put('/recoveryclave', controladorUsuarioCliente.recuperarContrasena);
 module.exports=router; 

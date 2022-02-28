@@ -7,6 +7,7 @@ const bcrypt = require ('bcrypt');
 
 
 
+
 exports.listarUsuarioCliente = async (req,res,next) =>{
     try {
         const usuariocliente = await prisma.usuariosClientes.findMany();
@@ -200,3 +201,59 @@ exports.actualizarEstadoCliente= async (req,res) =>{
    
 }
 
+
+
+exports.recuperarContrasena = async (req, res, next)=>
+{   
+    
+    const {correo_usuario} =req.query;
+    var {contraenia_usuario} = req.body;
+
+
+    if(!correo_usuario)
+    {
+        res.send("Envie el correo usuario del cliente");
+    }
+    else
+    {
+
+        contraenia_usuario = (Math.floor(Math.random() * (99999 - 11111)) + 11111).toString();
+        const passwordHash = await bcrypt.hash(contraenia_usuario,12)
+
+        try {
+            
+            var buscarUser = await prisma.usuariosClientes.findFirst({
+             where:
+            {
+                correo_usuario: correo_usuario,
+            },
+            })
+            
+           
+            const clientes = await prisma.usuariosClientes.update({
+                where:
+                {
+                      id_usuarioCliente: Number(buscarUser.id_usuarioCliente),
+                },
+                data: 
+                {
+                    contraenia_usuario: passwordHash,
+                }
+                
+
+            })
+
+
+
+
+            res.json("Correo: "+clientes.correo_usuario+" Clave nueva: "+contraenia_usuario+" Ingrese nuevamente para cambiar su clave");
+
+
+
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+   
+};
