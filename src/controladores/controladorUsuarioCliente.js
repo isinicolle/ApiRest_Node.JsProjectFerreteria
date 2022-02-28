@@ -75,7 +75,7 @@ exports.insertarUsuariocliente = async (req,res,next) =>{
             data: 
             {
                 nombre_usuario: nombre_usuario,
-                contraenia_usuario: contraenia_usuario,
+                contraenia_usuario: passwordHash,
                 id_cliente: id_cliente,
                 correo_usuario: correo_usuario,
                 estado : true,
@@ -152,7 +152,7 @@ exports.actualizarCliente= async (req,res) =>{
     else
     {
         try {
-      
+            const passwordHash = await bcrypt.hash(contraenia_usuario,12)
             const clientes = await prisma.usuariosClientes.update({
             where:
             {
@@ -161,12 +161,13 @@ exports.actualizarCliente= async (req,res) =>{
             data: 
             {
                 nombre_usuario: nombre_usuario,
-                contraenia_usuario: contraenia_usuario,
+                contraenia_usuario: passwordHash,
                 id_cliente: id_cliente,
                 correo_usuario: correo_usuario,
             }
             
             })
+            
             res.json(clientes);
         } catch (error) {
             console.log(error)
