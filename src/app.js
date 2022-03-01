@@ -5,6 +5,8 @@ const rutaDepartamento = require('./rutas/rutaDepartamento');
 const rutaProveedor = require('./rutas/rutaProveedores');
 const rutaCompra = require('./rutas/rutaCompras');
 const rutaDetalleCompra = require('./rutas/rutaDetalleCompra');
+const rutaCarrito = require('./rutas/rutaCarrito');
+const { application } = require('express');
 const app = express();
 app.use(morgan('dev'));
 app.use(express.urlencoded({extended:false}));
@@ -32,7 +34,7 @@ app.use('/ventas', require('./rutas/rutasVentas'));
 
 //VENTAS DETALLE
 app.use('/ventasdetalle', require('./rutas/rutasDetalleVentas'));
-
+app.use('/api/carrito',rutaCarrito);
 
 //definir el puerto que se usara en el servidor
 app.listen(6001, ()=>
