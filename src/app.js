@@ -7,6 +7,8 @@ const rutaProveedor = require('./rutas/rutaProveedores');
 const rutaCompra = require('./rutas/rutaCompras');
 const rutaDetalleCompra = require('./rutas/rutaDetalleCompra');
 const rutaCarrito = require('./rutas/rutaCarrito');
+const rutaCategoria = require('./rutas/rutaCategoria');
+const rutaMarca = require('./rutas/rutaMarcas');
 const app = express();
 app.use(morgan('dev'));
 app.use(express.urlencoded({extended:false}));
@@ -19,6 +21,8 @@ app.use('/api/proveedores/',rutaProveedor);
 app.use('/api/departamentos/',rutaDepartamento);
 app.use('/api/compra/',rutaCompra);
 app.use('/api/detallecompra/',rutaDetalleCompra);
+app.use('/api/categoria/',rutaCategoria);
+app.use('/api/marca', rutaMarca);
 app.use('/api/clientes/',require('./rutas/rutaclientes'));
 app.use('/api/direccionesEnvio/',require('./rutas/rutaDireccionesEnvio'));
 app.use('/api/usuarioCliente',require('./rutas/rutaUsuarioCliente'));
@@ -26,6 +30,8 @@ app.use('/api/empleados/',require('./rutas/rutasEmpleados'));
 app.use('/api/usuarioempleados/',require('./rutas/rutasUsuarioEmpleados'));
 app.use('/api/rolesempleados/',require('./rutas/rutasRolesEmpleados'));
 app.use('/api/empresaenvios/',require('./rutas/rutasEmpresaEnvios'));
+app.use('/api/categoria/',require('./rutas/rutaCategoria'));
+app.use('/api/marca', require('./rutas/rutaMarcas'));
 //ENVIOS
 app.use('/api/envios', require('./rutas/rutaEnvios'));
 

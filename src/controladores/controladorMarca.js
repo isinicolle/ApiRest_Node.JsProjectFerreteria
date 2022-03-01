@@ -88,3 +88,20 @@ exports.ModificarMarca = async (req, res) => {
         next(error)
     }
 }
+
+exports.ProductoPorMarca = async (req, res) => {
+    let {idmarca} = req.query;
+        idmarca = parseInt(idmarca);
+        const marca = await ModeloMarca.findMany({
+            where:
+            {
+                id_marca: idmarca
+            },
+            select:{
+                Productos:{
+                    select:{descripcion_producto:true, precio_actual: true},
+                }
+            }
+        });
+        res.json(marca);
+}

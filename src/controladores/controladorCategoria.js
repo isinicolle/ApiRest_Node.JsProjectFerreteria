@@ -88,3 +88,20 @@ exports.ModificarCategoria = async (req, res) => {
         next(error)
     }
 }
+
+exports.listarCategoriaPorProducto = async (req, res) => {
+    let {idcategoria} = req.query;
+    idcategoria = parseInt(idcategoria);
+    const categoria = await ModeloCategoria.findMany({
+        where:
+        {
+            id_categoria: idcategoria
+        },
+        select:{
+            Productos:{
+                select:{descripcion_producto:true, precio_actual: true},
+            }
+        }
+    });
+    res.json(categoria);
+}
