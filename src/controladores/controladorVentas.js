@@ -1,5 +1,10 @@
 const {PrismaClient} = require('@prisma/client') ;
 const prisma = new PrismaClient();
+const modeloCarrito = prisma.carrito;
+const modeloItemCarrito = prisma.carritoItem;
+const modeloDetalleVenta = prisma.detallesVentas;
+const modeloVenta = prisma.venta;
+const modeloUsuario = prisma.usuariosClientes
 
 exports.listar = async (req,res,next) => {
     try{
@@ -107,3 +112,54 @@ exports.buscarId = async (req,res,next) =>{
         }
     }
  };
+ 
+ exports.procesarCarrito = async(req,res)=>{
+    let {idUsuario} = req.query;
+    let {rtn} = req.body;
+    //Conseguir el carrito del usuario
+    let Carrito = await modeloCarrito.findFirst({
+        where:{id_usuarioCliente:Number(idUsuario)},
+    select:{CarritoItem:{select:{Productos:true,cantidad:true}}}});
+   //Conseguir el cliente del usuario
+        let Cliente = await modeloUsuario.findFirst({
+            where:{id_usuarioCliente:Number(idUsuario)},
+            select:{
+                Clientes:true
+            }
+        });
+        //Realizar la venta
+        let VentaR ;
+    await modeloVenta.create({
+       data:{
+           fecha:new Date(Date.now()).toISOString(),
+            Clientes:{connect:{id_cliente:Cliente.Clientes.id_cliente}},
+            RTN_estado:rtn,
+            ISV:.15,
+            descuento:0,
+       }}).then((data)=>{
+        console.log(data);
+        VentaR=data;
+    }).catch((err)=>{
+        console.log(err);
+    });   
+
+       //Añadir el detalle
+       
+       Carrito.CarritoItem.forEach(
+        async function (elemento){
+           await modeloDetalleVenta.create({
+               data:{
+                   Productos:{connect:{ id_producto:elemento.Productos.id_producto}},
+                   Venta:{connect:{id_Venta:VentaR.id_Venta}},
+                   precio:elemento.Productos.precio_actual,
+                   cantidad:elemento.cantidad
+               }
+           }).then((data)=>{
+               console.log(data);
+           }).catch((err)=>{
+               console.log(err);
+           })
+        }
+    );
+     res.send(VentaR);       
+    };
