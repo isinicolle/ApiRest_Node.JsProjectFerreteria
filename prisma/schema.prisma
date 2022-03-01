@@ -149,6 +149,7 @@ model Productos {
   Categorias           Categorias       @relation(fields: [id_categoria], references: [id_categoria], onUpdate: NoAction, map: "FK_Productos_Categorias")
   Marcas               Marcas           @relation(fields: [id_marca], references: [id_marca], onUpdate: NoAction, map: "FK_Productos_Marcas")
   Proveedores          Proveedores      @relation(fields: [id_proveedor], references: [id_prov], onUpdate: NoAction, map: "FK_Productos_Proveedores")
+  CarritoItem          CarritoItem[]
   DetalleCompras       DetalleCompras[]
   DetallesVentas       DetallesVentas[]
 }
@@ -200,6 +201,7 @@ model usuariosClientes {
   correo_usuario     String             @db.NVarChar(50)
   estado             Boolean
   Clientes           Clientes           @relation(fields: [id_cliente], references: [id_cliente], onUpdate: NoAction, map: "FK_usuariosClientes_Clientes")
+  Carrito            Carrito[]
   DireccionesEnvio   DireccionesEnvio[]
 }
 
@@ -213,4 +215,20 @@ model Venta {
   Clientes       Clientes         @relation(fields: [id_cliente], references: [id_cliente], onUpdate: NoAction, map: "FK_Venta_Clientes")
   DetallesVentas DetallesVentas[]
   Envios         Envios[]
+}
+
+model Carrito {
+  id_carrito        Int              @id(map: "PK_Carrito") @default(autoincrement())
+  id_usuarioCliente Int
+  usuariosClientes  usuariosClientes @relation(fields: [id_usuarioCliente], references: [id_usuarioCliente], onUpdate: NoAction, map: "FK_Carrito_usuariosClientes")
+  CarritoItem       CarritoItem[]
+}
+
+model CarritoItem {
+  id_itemCarrito Int       @id(map: "PK_CarritoItem") @default(autoincrement())
+  id_Carrito     Int
+  id_producto    Int
+  cantidad       Int
+  Carrito        Carrito   @relation(fields: [id_Carrito], references: [id_carrito], onUpdate: NoAction, map: "FK_CarritoItem_Carrito")
+  Productos      Productos @relation(fields: [id_producto], references: [id_producto], onUpdate: NoAction, map: "FK_CarritoItem_Productos")
 }

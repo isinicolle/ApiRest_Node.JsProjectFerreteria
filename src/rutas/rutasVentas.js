@@ -7,5 +7,6 @@ router.post('/guardar', controladorVentas.guardar);
 router.put('/actualizar', controladorVentas.actualizar);
 router.delete('/eliminar', controladorVentas.eliminar);
 router.get('/buscarid', controladorVentas.buscarId);
+router.post('/procesarCarrito', controladorVentas.procesarCarrito);
 
 module.exports=router; 
