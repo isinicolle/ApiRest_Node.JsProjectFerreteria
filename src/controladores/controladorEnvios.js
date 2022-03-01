@@ -1,6 +1,13 @@
 const {PrismaClient} = require('@prisma/client') ;
 const { text } = require('express');
 const prisma = new PrismaClient();
+const joi = require("@hapi/joi");
+
+const validar = joi.object({
+    num_rastreo: joi.string().min(2).required(),
+    id_venta: joi.number().integer().required(),
+    id_empresaEnvio: joi.number().integer().required(),
+});
 
  exports.listar = async (req,res,next) => {
      try{
@@ -19,11 +26,18 @@ const prisma = new PrismaClient();
 
  exports.guardar = async (req,res,next) =>{
    try {
-       const envios = await prisma.envios.create({
-           data: req.body,
-       })
-       //res.json(envios);
-       res.send("Resgistro de Envio Insertado")
+        const result = await validar.validate(req.body);
+        if(result.error){
+            res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+        }
+        else{
+            const envios = await prisma.envios.create({
+                data: req.body,
+            })
+            //res.json(envios);
+            res.send("Registro de Envio Insertado");
+        }
+       
    } catch (error) {
        console.log(error)
        next(error);
@@ -41,15 +55,22 @@ exports.actualizar = async (req,res,next) =>{
    else
    {
        try {
-           const actualizarEnvio = await prisma.envios.update({
-                   where:
-                   {
-                     id_envio: Number(id),
-                   },
-                   data: {num_rastreo,id_venta,id_empresaEnvio},
-               })
-               //res.json(actualizarEnvio)
-               res.send("Registro Actualizado");
+            const result = await validar.validate(req.body);
+            if(result.error){
+                res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+            }
+            else{
+                const actualizarEnvio = await prisma.envios.update({
+                    where:
+                    {
+                      id_envio: Number(id),
+                    },
+                    data: {num_rastreo,id_venta,id_empresaEnvio},
+                })
+                //res.json(actualizarEnvio)
+                res.send("Registro Actualizado");
+            }
+                
        } catch (error) {
            next(error)
        }
@@ -65,14 +86,14 @@ exports.eliminar = async (req,res,next) =>{
    else
    {
        try {
-           const eliminarEnvio = await prisma.envios.delete({
-                   where:
-                   {
-                     id_envio: Number(id),
-                   },
-               })
-               //res.json(eliminarEnvio)
-               res.send("Registro Eliminado");
+            const eliminarEnvio = await prisma.envios.delete({
+                where:
+                {
+                    id_envio: Number(id),
+                },
+                })
+                //res.json(eliminarEnvio)
+                res.send("Registro Eliminado");    
        } catch (error) {
            next(error)
        }
@@ -88,21 +109,20 @@ exports.buscarId = async (req,res,next) =>{
    else
    {
        try {
-           const buscarEnvio = await prisma.envios.findUnique({
-                   where:
-                   {
-                     id_envio: Number(id),
-                   },
-               })
-               if(!buscarEnvio)
-               {
-                  res.send("No se encontraron datos");
-               }
-               else{
-                  res.json(buscarEnvio);
-               //res.send("Registro Encontrado");
-               }
-               
+            const buscarEnvio = await prisma.envios.findUnique({
+                where:
+                {
+                    id_envio: Number(id),
+                },
+                })
+                if(!buscarEnvio)
+                {
+                   res.send("No se encontraron datos");
+                }
+                else{
+                   res.json(buscarEnvio);
+                //res.send("Registro Encontrado");
+            }
        } catch (error) {
            next(error)
        }
