@@ -37,13 +37,37 @@ exports.agregarProducto = async(req,res)=>{
     let {idProducto} = req.body;
     idUsuario = parseInt(idUsuario);
     idProducto = parseInt(idProducto);
-    const{Cantidad} = req.body;
+    let{Cantidad} = req.body;
     const Carrito = await modeloCarrito.findFirst({where:{id_usuarioCliente:idUsuario}});
-    if (!Carrito || Carrito.length==0)
+    const buscarProd = await modeloItemCarrito.findMany({
+        where:{
+            id_Carrito:Carrito.id_carrito,
+            id_producto:idProducto
+        }
+    });
+    if (buscarProd.length>0)
     {
-      Carrito = this.nuevoCarrito(req);
-    }
-    modeloItemCarrito.create({data:{
+        Cantidad += buscarProd[0].cantidad;
+        modeloItemCarrito.updateMany({
+            where:{
+                id_Carrito:Carrito.id_carrito,
+                id_producto:idProducto
+            },
+            data:{
+                cantidad:Cantidad
+            }
+        }).then((data)=>{
+            res.send(data);
+
+        }).catch((err)=>{
+            res.send("Se encontró un error");
+            console.log(err);
+        })
+    
+        
+    } else
+    { 
+        modeloItemCarrito.create({data:{
         Carrito:{connect:{id_carrito:Carrito.id_carrito}},
         Productos:{connect:{id_producto:idProducto}},
         cantidad:Cantidad
@@ -54,6 +78,7 @@ exports.agregarProducto = async(req,res)=>{
         res.json("Error");
         console.log(err);
     });
+}
 }
 
 exports.modificarCarrito = async(req,res)=>{
