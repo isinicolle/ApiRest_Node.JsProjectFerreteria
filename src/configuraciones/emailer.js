@@ -36,7 +36,7 @@ var transport = nodemailer.createTransport({
  //
  const sendMailPassword = async (correo,clave) => 
  {
-   const infor = await transport.sendMailPassword(
+   const infor = await transport.sendMail(
     {
         from: 'ferreteriaferretear@gmail.com', // sender address
         to: `${correo}`, 
