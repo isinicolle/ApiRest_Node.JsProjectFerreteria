@@ -1,5 +1,4 @@
 const {PrismaClient} = require('@prisma/client') ;
-const { text } = require('express');
 const prisma = new PrismaClient();
 const joi = require("@hapi/joi");
 

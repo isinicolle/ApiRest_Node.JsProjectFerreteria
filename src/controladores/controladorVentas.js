@@ -1,5 +1,14 @@
 const {PrismaClient} = require('@prisma/client') ;
 const prisma = new PrismaClient();
+const joi = require("@hapi/joi");
+
+const validar = joi.object({
+    fecha: joi.required(),
+    id_cliente: joi.number().integer().required(),
+    RTN_estado: joi.boolean().required(),
+    ISV: joi.number().required(),
+    descuento: joi.number().required()
+});
 
 exports.listar = async (req,res,next) => {
     try{
@@ -18,12 +27,20 @@ exports.listar = async (req,res,next) => {
 
  exports.guardar = async (req,res,next) =>{
    try {
-       const ventas = await prisma.venta.create({
-           data: req.body,
-       })
-       //res.json(ventas);
-       res.send("Resgistro de Venta Insertado")
-   } catch (error) {
+        const result = await validar.validate(req.body);
+        if(result.error){
+            res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+        }
+        else{
+            const ventas = await prisma.venta.create({
+                data: req.body,
+            })
+            //res.json(ventas);
+            res.send("Registro de Venta Insertado");
+        }
+            
+        }
+catch (error) {
        console.log(error)
        next(error);
    }
@@ -40,15 +57,22 @@ exports.actualizar = async (req,res,next) =>{
    else
    {
        try {
-           const actualizarVenta = await prisma.venta.update({
-                   where:
-                   {
-                     id_Venta: Number(id),
-                   },
-                   data: {fecha,id_cliente,RTN_estado,ISV,descuento},
-               })
-               //res.json(actualizarVenta)
-               res.send("Registro Actualizado");
+            const result = await validar.validate(req.body);
+            if(result.error){
+                res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+            }
+            else{
+                const actualizarVenta = await prisma.venta.update({
+                    where:
+                    {
+                      id_Venta: Number(id),
+                    },
+                    data: {fecha,id_cliente,RTN_estado,ISV,descuento},
+                })
+                //res.json(actualizarVenta)
+                res.send("Registro Actualizado");
+            }
+           
        } catch (error) {
            next(error)
        }
