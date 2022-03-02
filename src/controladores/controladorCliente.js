@@ -1,6 +1,22 @@
 const {PrismaClient} = require('@prisma/client') ;
 const prisma = new PrismaClient();
 
+const joi = require("@hapi/joi");
+const { text } = require('express');
+
+
+
+
+const validar = joi.object({
+    nom_cliente: joi.string().min(2).required(),
+    apellido_cliente: joi.string().min(2).required(),
+    RTN: joi.string().min(2).required(),
+    DNI_Cliente: joi.string().min(2).required(),
+    tel_cliente:  joi.string().min(2).required(),
+    direccion_cliente:  joi.string().min(2).required(),
+    id_ciudad: joi.number().integer().required(),
+});
+
 
 //listar cliente
 exports.listarClientes = async (req,res,next) =>{
@@ -42,15 +58,28 @@ exports.buscarCliente = async (req,res,next) =>{
 
 //insertar cliente
 exports.insertarcliente = async (req,res,next) =>{
-    try {
-        const clientes = await prisma.clientes.create({
-            data: req.body,
-        })
-        res.json(clientes);
-    } catch (error) {
-        console.log(error)
-        next(error);
+
+    const result = await validar.validate(req.body);
+    if(result.error)
+    {
+        res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+
+    
+        
     }
+    else
+    {
+        try {
+            const clientes = await prisma.clientes.create({
+                data: req.body,
+            })
+            res.json(clientes);
+        } catch (error) {
+            console.log(error)
+            next(error);
+        }
+    }
+    
 }
 
 //actualizar cliente
