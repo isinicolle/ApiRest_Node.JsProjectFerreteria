@@ -96,7 +96,7 @@ exports.eliminarDireccionEnvio= async (req,res) =>{
        
            
     }
-}
+};
 
 exports.actualizarDireccionEnvio= async (req,res) =>{
     const {id_direccionEnvio} =req.query;
@@ -109,27 +109,39 @@ exports.actualizarDireccionEnvio= async (req,res) =>{
     }
     else
     {
-        try {
-      
-            const direccionEnvio = await prisma.direccionesEnvio.update({
-            where:
-            {
-                id_direccionEnvio: Number(id_direccionEnvio),
-            },
-            data: 
-            {
-                direccion : direccion,
-                id_ciudad: id_ciudad,
-                id_usuarioCliente: id_usuarioCliente,
-                direccion_opcional: direccion_opcional,
-            }
+        const result = await validar.validate(req.body);
+        if(result.error)
+        {
+            res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+    
+        
             
-            })
-            res.json(direccionEnvio);
-        } catch (error) {
-            console.log(error)
-            next(error)
         }
+        else{
+
+            try {
+      
+                const direccionEnvio = await prisma.direccionesEnvio.update({
+                where:
+                {
+                    id_direccionEnvio: Number(id_direccionEnvio),
+                },
+                data: 
+                {
+                    direccion : direccion,
+                    id_ciudad: id_ciudad,
+                    id_usuarioCliente: id_usuarioCliente,
+                    direccion_opcional: direccion_opcional,
+                }
+                
+                })
+                res.json(direccionEnvio);
+            } catch (error) {
+                console.log(error)
+                next(error)
+            }
+        }
+        
     }
    
 }
