@@ -170,7 +170,7 @@ exports.buscarId = async (req,res,next) =>{
     });
      res.send(VentaR);       
     }; //Fin función procesar carrito
-   
+
  exports.historialVentas = async(req,res)=>{
         let {idCliente} = req.query;
         await modeloVenta.findMany({
