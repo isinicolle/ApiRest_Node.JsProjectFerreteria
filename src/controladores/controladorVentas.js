@@ -1,4 +1,4 @@
-const {PrismaClient} = require('@prisma/client') ;
+const {PrismaClient} = require("@prisma/client");
 const prisma = new PrismaClient();
 const modeloCarrito = prisma.carrito;
 const modeloItemCarrito = prisma.carritoItem;
@@ -50,7 +50,7 @@ exports.actualizar = async (req,res,next) =>{
                    {
                      id_Venta: Number(id),
                    },
-                   data: {fecha,id_cliente,RTN_estado,ISV,descuento},
+                   data: {fecha:fecha,Clientes:{connect:{id_cliente:id_cliente}},RTN_estado:RTN_estado,ISV:ISV,descuento:descuento},
                })
                //res.json(actualizarVenta)
                res.send("Registro Actualizado");
@@ -115,11 +115,11 @@ exports.buscarId = async (req,res,next) =>{
  
  exports.procesarCarrito = async(req,res)=>{
     let {idUsuario} = req.query;
-    let {rtn} = req.body;
+    let {rtn,idDireccionEnvio} = req.body;
     //Conseguir el carrito del usuario
     let Carrito = await modeloCarrito.findFirst({
         where:{id_usuarioCliente:Number(idUsuario)},
-    select:{CarritoItem:{select:{Productos:true,cantidad:true}}}});
+    select:{id_carrito:true,CarritoItem:{select:{Productos:true,cantidad:true}}}});
    //Conseguir el cliente del usuario
         let Cliente = await modeloUsuario.findFirst({
             where:{id_usuarioCliente:Number(idUsuario)},
@@ -128,7 +128,7 @@ exports.buscarId = async (req,res,next) =>{
             }
         });
         //Realizar la venta
-        let VentaR ;
+        let VentaR;
     await modeloVenta.create({
        data:{
            fecha:new Date(Date.now()).toISOString(),
@@ -136,6 +136,7 @@ exports.buscarId = async (req,res,next) =>{
             RTN_estado:rtn,
             ISV:.15,
             descuento:0,
+            DireccionesEnvio:{connect:{id_direccionEnvio:idDireccionEnvio}}
        }}).then((data)=>{
         console.log(data);
         VentaR=data;
@@ -161,5 +162,24 @@ exports.buscarId = async (req,res,next) =>{
            })
         }
     );
+
+    await modeloItemCarrito.deleteMany({where:{id_Carrito:Carrito.id_carrito}}).then((data)=>{
+        console.log(data);
+    }).catch((err)=>{
+        console.log(err);
+    });
      res.send(VentaR);       
-    };
+    }; //Fin función procesar carrito
+   
+ exports.historialVentas = async(req,res)=>{
+        let {idCliente} = req.query;
+        await modeloVenta.findMany({
+            where:{id_cliente:Number(idCliente)},
+            include:{DetallesVentas:{include:{Productos:true}}}
+        }).then((data)=>{
+            res.json(data);
+        }).catch((err)=>{
+            console.log(err);
+            res.send("Error inesperado");
+        })
+    }
