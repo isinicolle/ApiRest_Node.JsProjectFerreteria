@@ -182,8 +182,7 @@ exports.actualizarCliente= async (req,res) =>{
        
     }
    
-}
-
+};
 
 
 //actualizar estado cliente
@@ -232,3 +231,4 @@ exports.actualizarEstadoCliente= async (req,res) =>{
     }
 
 }
+
