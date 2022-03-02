@@ -11,6 +11,8 @@ router.delete('/eliminarUsuarioCliente', controladorUsuarioCliente.eliminarUsuar
 router.put('/actualizarUsuarioCliente', controladorUsuarioCliente.actualizarCliente);
 
 router.put('/actualizarUsuarioEstadoCliente', controladorUsuarioCliente.actualizarEstadoCliente);
+router.put('/actualizarclave', controladorUsuarioCliente.actualizarClave);
+
 
 router.put('/recoveryclave', controladorUsuarioCliente.recuperarContrasena);
 

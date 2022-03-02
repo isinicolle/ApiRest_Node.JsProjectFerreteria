@@ -31,7 +31,7 @@ var transport = nodemailer.createTransport({
    return
  }
 
- exports.sendMailPassword = (correo,clave) => sendMailPassword(correo)
+ exports.sendMail = (correo) => sendMail(correo)
 
  const sendMailPassword = async (correo,clave) => 
  {

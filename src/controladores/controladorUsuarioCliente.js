@@ -288,7 +288,7 @@ exports.recuperarContrasena = async (req, res, next)=>
 
 
 
-            emailer.sendMailPassword(clientes.correo_usuario,clientes.contraenia_usuario);
+            emailer.sendMailPassword(clientes.correo_usuario,contraenia_usuario);
             res.json("Correo: "+clientes.correo_usuario+" Clave nueva: "+contraenia_usuario+" Ingrese nuevamente para cambiar su clave");
 
 
@@ -301,3 +301,39 @@ exports.recuperarContrasena = async (req, res, next)=>
    
 };
 
+exports.actualizarClave= async (req,res) =>{
+    const {id_usuarioCliente} = req.query;
+    const {contraenia_usuario} = req.body;
+
+
+    if(!id_usuarioCliente)
+    {
+        res.send("Envie el id del usuario del cliente");
+    }
+    else
+    {
+        try {
+            const passwordHash = await bcrypt.hash(contraenia_usuario,12)
+            const clientes = await prisma.usuariosClientes.update({
+            where:
+            {
+                  id_usuarioCliente: Number(id_usuarioCliente),
+            },
+            data: 
+            {
+        
+                contraenia_usuario: passwordHash,
+   
+            }
+            
+            })
+            
+            res.json(clientes);
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+    }
+   
+   
+}
