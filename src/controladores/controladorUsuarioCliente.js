@@ -104,10 +104,15 @@ exports.insertarUsuariocliente = async (req,res,next) =>{
         res.json(clientes);
 */
         const result = await validar.validate(req.body);
-        if(!nombre_usuario || !contraenia_usuario || !id_cliente || !correo_usuario)
+        if(result.error)
+        {
+            res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+            
+        }
+       /* if(!nombre_usuario || !contraenia_usuario || !id_cliente || !correo_usuario)
         {
             res.send('No mandar datos vacios');
-        }
+        }*/
         else
         {
             if(contraenia_usuario.length < 6)
