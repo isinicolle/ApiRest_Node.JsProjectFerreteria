@@ -15,11 +15,10 @@ exports.listarEmpleados = async (req,res,next) =>{
 exports.insertarEmpleados = async (req,res,next) =>{
     
     try {
-        const {nom_empleado , apellido_empleado,correo_empleado,telefono_empleado, direccion_empleado,id_ciudad,id_rol,fnacimiento_empleado,Estado}= req.body;
+        const {nom_empleado , apellido_empleado,telefono_empleado, direccion_empleado,id_ciudad,id_rol,fnacimiento_empleado,Estado}= req.body;
         const empleados = await prisma.empleados.create({
           data:{ nom_empleado:nom_empleado,
            apellido_empleado:apellido_empleado,
-           correo_empleado:correo_empleado,
            telefono_empleado:telefono_empleado,
             direccion_empleado:direccion_empleado,
             Ciudades:{connect:{id_ciudad:id_ciudad}},
@@ -62,7 +61,7 @@ exports.eliminarEmpleado= async (req,res) =>{
 
 exports.actualizarEmpleados = async (req, res) => {
     let { id_empleado } = req.query;
-    const { nom_empleado , apellido_empleado,correo_empleado,telefono_empleado, direccion_empleado} = req.body;
+    const { nom_empleado , apellido_empleado,telefono_empleado, direccion_empleado} = req.body;
     let {Estado,id_ciudad,id_rol,fnacimiento_empleado} = req.body;
     id_empleado=parseInt(id_empleado);
     id_rol= parseInt(id_rol);
@@ -79,7 +78,6 @@ exports.actualizarEmpleados = async (req, res) => {
       data:{
         nom_empleado:nom_empleado|| undefined,
         apellido_empleado:apellido_empleado|| undefined,
-        correo_empleado:correo_empleado|| undefined,
         telefono_empleado:telefono_empleado|| undefined,
          direccion_empleado:direccion_empleado|| undefined,
          id_ciudad:id_ciudad|| undefined,
