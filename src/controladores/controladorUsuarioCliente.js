@@ -9,12 +9,17 @@ const { text } = require('express');
 
 const validar = joi.object({
     nombre_usuario: joi.string().min(2).required(),
-    contraenia_usuario: joi.string().min(2).required(),
+    contraenia_usuario: joi.string().min(6).required(),
     id_cliente: joi.number().integer().required(),
     correo_usuario: joi.string().min(2).required(),
 });
 const validarEstado = joi.object({
     estado: joi.boolean().required(),
+
+});
+
+const validarClave = joi.object({
+    contraenia_usuario: joi.string().min(6).required(),
 
 });
 
@@ -353,27 +358,36 @@ exports.actualizarClave= async (req,res) =>{
     }
     else
     {
-        try {
-            const passwordHash = await bcrypt.hash(contraenia_usuario,12)
-            const clientes = await prisma.usuariosClientes.update({
-            where:
-            {
-                  id_usuarioCliente: Number(id_usuarioCliente),
-            },
-            data: 
-            {
-        
-                contraenia_usuario: passwordHash,
-   
-            }
-            
-            })
-            
-            res.json(clientes);
-        } catch (error) {
-            console.log(error)
-            next(error)
+        const result = await validarClave.validate(req.body);
+
+        if(result.error){
+            res.send("ERROR! Verifique que su clave tenga mas de 6 digitos");
         }
+        else
+        {
+            try {
+                const passwordHash = await bcrypt.hash(contraenia_usuario,12)
+                const clientes = await prisma.usuariosClientes.update({
+                where:
+                {
+                      id_usuarioCliente: Number(id_usuarioCliente),
+                },
+                data: 
+                {
+            
+                    contraenia_usuario: passwordHash,
+       
+                }
+                
+                })
+                
+                res.json(clientes);
+            } catch (error) {
+                console.log(error)
+                next(error)
+            }
+        }
+      
     }
    
    
