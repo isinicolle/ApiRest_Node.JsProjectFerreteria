@@ -107,6 +107,8 @@ exports.insertarUsuariocliente = async (req,res,next) =>{
         if(result.error)
         {
             res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+
+        
             
         }
        /* if(!nombre_usuario || !contraenia_usuario || !id_cliente || !correo_usuario)
@@ -188,9 +190,17 @@ exports.actualizarCliente= async (req,res) =>{
     const {nombre_usuario,contraenia_usuario,id_cliente,correo_usuario} = req.body;
 
 
-    if(!id_usuarioCliente)
+    /*if(!id_usuarioCliente)
     {
         res.send("Envie el id del usuario del cliente");
+    }*/
+    const result = await validar.validate(req.body);
+    if(result.error)
+    {
+        res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+
+    
+        
     }
     else
     {
