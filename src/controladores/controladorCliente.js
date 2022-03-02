@@ -184,6 +184,9 @@ exports.actualizarCliente= async (req,res) =>{
    
 }
 
+
+
+//actualizar estado cliente
 exports.actualizarEstadoCliente= async (req,res) =>{
     const {id_cliente} =req.query;
     const {estado} = req.body;
@@ -198,7 +201,7 @@ exports.actualizarEstadoCliente= async (req,res) =>{
         const result = await validarEstado.validate(req.body);
         if(result.error)
         {
-            res.send("ERROR! Verifique que el estado sea correcto");
+            res.send("ERROR! Verifique que coloco correctamente el estado");
     
         
             
@@ -215,6 +218,7 @@ exports.actualizarEstadoCliente= async (req,res) =>{
                 data: 
                 {
                     estado: estado,
+                
                 }
                 
                 })
@@ -226,7 +230,5 @@ exports.actualizarEstadoCliente= async (req,res) =>{
         }
        
     }
-   
+
 }
-
-
