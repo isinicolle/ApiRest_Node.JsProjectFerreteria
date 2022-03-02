@@ -13,6 +13,10 @@ const validar = joi.object({
     id_cliente: joi.number().integer().required(),
     correo_usuario: joi.string().min(2).required(),
 });
+const validarEstado = joi.object({
+    estado: joi.boolean().required(),
+
+});
 
 exports.listarUsuarioCliente = async (req,res,next) =>{
     try {
@@ -190,42 +194,46 @@ exports.actualizarCliente= async (req,res) =>{
     const {nombre_usuario,contraenia_usuario,id_cliente,correo_usuario} = req.body;
 
 
-    /*if(!id_usuarioCliente)
+    if(!id_usuarioCliente)
     {
         res.send("Envie el id del usuario del cliente");
-    }*/
-    const result = await validar.validate(req.body);
-    if(result.error)
-    {
-        res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
-
-    
-        
     }
     else
     {
-        try {
-            const passwordHash = await bcrypt.hash(contraenia_usuario,12)
-            const clientes = await prisma.usuariosClientes.update({
-            where:
-            {
-                  id_usuarioCliente: Number(id_usuarioCliente),
-            },
-            data: 
-            {
-                nombre_usuario: nombre_usuario,
-                contraenia_usuario: passwordHash,
-                id_cliente: id_cliente,
-                correo_usuario: correo_usuario,
-            }
+        const result = await validar.validate(req.body);
+        if(result.error)
+        {
+            res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+    
+        
             
-            })
-            
-            res.json(clientes);
-        } catch (error) {
-            console.log(error)
-            next(error)
         }
+        else
+        {
+            try {
+                const passwordHash = await bcrypt.hash(contraenia_usuario,12)
+                const clientes = await prisma.usuariosClientes.update({
+                where:
+                {
+                      id_usuarioCliente: Number(id_usuarioCliente),
+                },
+                data: 
+                {
+                    nombre_usuario: nombre_usuario,
+                    contraenia_usuario: passwordHash,
+                    id_cliente: id_cliente,
+                    correo_usuario: correo_usuario,
+                }
+                
+                })
+                
+                res.json(clientes);
+            } catch (error) {
+                console.log(error)
+                next(error)
+            }
+        }
+       
     }
    
    
@@ -238,28 +246,41 @@ exports.actualizarEstadoCliente= async (req,res) =>{
 
     if(!id_usuarioCliente)
     {
-        res.send("Envie el id del usuario del cliente");
+        res.send("Debe enviar el id del usuario");
     }
     else
     {
-        try {
-      
-            const clientes = await prisma.usuariosClientes.update({
-            where:
-            {
-                id_usuarioCliente: Number(id_usuarioCliente),
-            },
-            data: 
-            {
-                estado: estado,
-            }
+
+        const result = await validarEstado.validate(req.body);
+        if(result.error)
+        {
+            res.send("ENVIE UN DATO TRUE/FALSE PARA EL ESTADO");
+    
+        
             
-            })
-            res.json(clientes);
-        } catch (error) {
-            console.log(error)
-            next(error)
         }
+        else
+        {
+            try {
+      
+                const clientes = await prisma.usuariosClientes.update({
+                where:
+                {
+                    id_usuarioCliente: Number(id_usuarioCliente),
+                },
+                data: 
+                {
+                    estado: estado,
+                }
+                
+                })
+                res.json(clientes);
+            } catch (error) {
+                console.log(error)
+                next(error)
+            }
+        }
+     
     }
    
 }
