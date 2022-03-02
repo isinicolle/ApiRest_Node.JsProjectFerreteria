@@ -20,6 +20,18 @@ const validar = joi.object({
     
 });
 
+const validarUpdate = joi.object({
+    nom_cliente: joi.string().min(2).required(),
+    apellido_cliente: joi.string().min(2).required(),
+    RTN: joi.string().min(2).required(),
+    direccion_cliente:  joi.string().min(2).required(),
+    id_ciudad: joi.number().integer().required(),
+    tel_cliente:  joi.string().min(2).required(),
+    DNI_Cliente: joi.string().min(2).required(),
+    
+    
+});
+
 
 //listar cliente
 exports.listarClientes = async (req,res,next) =>{
@@ -126,30 +138,42 @@ exports.actualizarCliente= async (req,res) =>{
     }
     else
     {
-        try {
-      
-            const clientes = await prisma.clientes.update({
-            where:
-            {
-                  id_cliente: Number(id_cliente),
-            },
-            data: 
-            {
-                nom_cliente: nom_cliente,
-                apellido_cliente: apellido_cliente,
-                RTN: RTN,
-                DNI_Cliente: DNI_Cliente,
-                tel_cliente: tel_cliente,
-                direccion_cliente: direccion_cliente,
-                id_ciudad: id_ciudad,
-            }
+        const result = await validarUpdate.validate(req.body);
+        if(result.error)
+        {
+            res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+    
+        
             
-            })
-            res.json(clientes);
-        } catch (error) {
-            console.log(error)
-            next(error)
         }
+        else
+        {
+            try {
+      
+                const clientes = await prisma.clientes.update({
+                where:
+                {
+                      id_cliente: Number(id_cliente),
+                },
+                data: 
+                {
+                    nom_cliente: nom_cliente,
+                    apellido_cliente: apellido_cliente,
+                    RTN: RTN,
+                    DNI_Cliente: DNI_Cliente,
+                    tel_cliente: tel_cliente,
+                    direccion_cliente: direccion_cliente,
+                    id_ciudad: id_ciudad,
+                }
+                
+                })
+                res.json(clientes);
+            } catch (error) {
+                console.log(error)
+                next(error)
+            }
+        }
+       
     }
    
 }
