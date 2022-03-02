@@ -288,7 +288,7 @@ exports.recuperarContrasena = async (req, res, next)=>
 
 
 
-            emailer.sendMailPassword(clientes.correo_usuario,clientes.contraenia_usuario);
+            emailer.sendMailPassword(clientes.correo_usuario, contraenia_usuario);
             res.json("Correo: "+clientes.correo_usuario+" Clave nueva: "+contraenia_usuario+" Ingrese nuevamente para cambiar su clave");
 
 
