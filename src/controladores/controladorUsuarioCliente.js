@@ -4,10 +4,15 @@ const prisma = new PrismaClient();
 const bcrypt = require ('bcrypt');
 const emailer = require('../configuraciones/emailer');
 
+const joi = require("@hapi/joi");
+const { text } = require('express');
 
-
-
-
+const validar = joi.object({
+    nombre_usuario: joi.string().min(2).required(),
+    contraenia_usuario: joi.string().min(2).required(),
+    id_cliente: joi.number().integer().required(),
+    correo_usuario: joi.string().min(2).required(),
+});
 
 exports.listarUsuarioCliente = async (req,res,next) =>{
     try {
@@ -98,7 +103,7 @@ exports.insertarUsuariocliente = async (req,res,next) =>{
         })
         res.json(clientes);
 */
-
+        const result = await validar.validate(req.body);
         if(!nombre_usuario || !contraenia_usuario || !id_cliente || !correo_usuario)
         {
             res.send('No mandar datos vacios');
