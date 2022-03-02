@@ -33,9 +33,10 @@ var transport = nodemailer.createTransport({
 
  exports.sendMail = (correo) => sendMail(correo)
 
+ //
  const sendMailPassword = async (correo,clave) => 
  {
-   const info = await transport.sendMailPassword(
+   const infor = await transport.sendMailPassword(
     {
         from: 'ferreteriaferretear@gmail.com', // sender address
         to: `${correo}`, 
@@ -49,7 +50,7 @@ var transport = nodemailer.createTransport({
     }
    );
 
-   console.log("Message sent: %s " , info.messageId)
+   console.log("Message sent: %s " , infor.messageId)
 
    return
  }
