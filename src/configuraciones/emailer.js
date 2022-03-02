@@ -31,4 +31,27 @@ var transport = nodemailer.createTransport({
    return
  }
 
- exports.sendMail = (correo) => sendMail(correo)
+ exports.sendMailPassword = (correo,clave) => sendMailPassword(correo)
+
+ const sendMailPassword = async (correo,clave) => 
+ {
+   const info = await transport.sendMailPassword(
+    {
+        from: 'ferreteriaferretear@gmail.com', // sender address
+        to: `${correo}`, 
+        subject: "Ferreteria Ferretear",
+        html: `   <div style="max-width: 700px; margin:auto; border: 10px solid #ddd;">
+        <h2 style="text-align: center; text-transform: uppercase; color: teal;">Recuperar clave</h2>
+        <p>Su nueva clave es la siguiente: </p>    
+        <p>Inicie sesion en su cuenta con la siguiente clave: ${clave} </p>    
+        </div>`,
+    
+    }
+   );
+
+   console.log("Message sent: %s " , info.messageId)
+
+   return
+ }
+
+ exports.sendMailPassword = (correo,clave) => sendMailPassword(correo,clave)

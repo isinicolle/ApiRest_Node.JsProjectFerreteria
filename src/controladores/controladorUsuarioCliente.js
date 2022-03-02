@@ -262,7 +262,7 @@ exports.recuperarContrasena = async (req, res, next)=>
 
         contraenia_usuario = (Math.floor(Math.random() * (99999 - 11111)) + 11111).toString();
         const passwordHash = await bcrypt.hash(contraenia_usuario,12)
-
+      
         try {
             
             var buscarUser = await prisma.usuariosClientes.findFirst({
@@ -288,7 +288,7 @@ exports.recuperarContrasena = async (req, res, next)=>
 
 
 
-
+            emailer.sendMailPassword(clientes.correo_usuario,clientes.contraenia_usuario);
             res.json("Correo: "+clientes.correo_usuario+" Clave nueva: "+contraenia_usuario+" Ingrese nuevamente para cambiar su clave");
 
 
@@ -301,38 +301,3 @@ exports.recuperarContrasena = async (req, res, next)=>
    
 };
 
-exports.loginUsuarioCliente = async (req,res,next) =>{
-    const {nombre_usuario,contraenia_usuario} =req.body;
-
-    if(!nombre_usuario || !contraenia_usuario)
-    {
-        res.send("Debe ingresar todos los datos");
-    }
-    else
-    {
-        try {
-            const buscarUsuarioCliente = await prisma.usuariosClientes.findFirst(
-                {
-                    where:
-                    {
-                        nombre_usuario: nombre_usuario,
-                    },//
-                })//
-                if(contraenia_usuario==buscarUsuarioCliente.contraenia_usuario){
-                    if(buscarUsuarioCliente.estado==true){
-                        res.json(buscarUsuarioCliente);
-                    }
-                    else{
-                        res.send("Este usuario esta inactivo, comunicarse con servicio al cliente")
-                    }
-                }
-                else{
-                    res.send("Usuario o contraseña incorrecto")
-                }
-        } catch (error) {
-            next(error),
-            res.send("Usuario o contraseña incorrecto");
-        }
-
-    }
-}
