@@ -1,6 +1,15 @@
 const {PrismaClient} = require('@prisma/client') ;
 const prisma = new PrismaClient();
 
+const joi = require("@hapi/joi");
+const { text } = require('express');
+
+const validar = joi.object({
+    direccion : joi.string().min(2).max(50).required(),
+    id_ciudad: joi.number().integer().required(),
+    id_usuarioCliente: joi.number().integer().required(),
+    direccion_opcional: joi.string().min(2).max(50).required(),
+});
 
 exports.listarDireccionesEnvio = async (req,res,next) =>{
     try {
@@ -18,7 +27,7 @@ exports.buscarDireccionEnvio = async (req,res,next) =>{
 
     if(!id_direccionEnvio)
     {
-        res.send("Envie el id de cliente");
+        res.send("Envie el id de direccion de envio");
     }
     else
     {
@@ -40,15 +49,26 @@ exports.buscarDireccionEnvio = async (req,res,next) =>{
 }
 
 exports.insertarDireccionenvio = async (req,res,next) =>{
-    try {
-        const direccionesEnvio = await prisma.direccionesEnvio.create({
-            data: req.body,
-        })
-        res.json(direccionesEnvio);
-    } catch (error) {
-        console.log(error)
-        next(error);
+    const result = await validar.validate(req.body);
+    if(result.error)
+    {
+        res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+
+    
+        
     }
+    else{
+        try {
+            const direccionesEnvio = await prisma.direccionesEnvio.create({
+                data: req.body,
+            })
+            res.json(direccionesEnvio);
+        } catch (error) {
+            console.log(error)
+            next(error);
+        }
+    }
+
 }
 
 exports.eliminarDireccionEnvio= async (req,res) =>{
