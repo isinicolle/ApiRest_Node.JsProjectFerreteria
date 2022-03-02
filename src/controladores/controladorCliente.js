@@ -32,6 +32,12 @@ const validarUpdate = joi.object({
     
 });
 
+const validarEstado = joi.object({
+ 
+    estado: joi.boolean().required(),
+ 
+    
+});
 
 //listar cliente
 exports.listarClientes = async (req,res,next) =>{
@@ -189,24 +195,36 @@ exports.actualizarEstadoCliente= async (req,res) =>{
     }
     else
     {
-        try {
-      
-            const clientes = await prisma.clientes.update({
-            where:
-            {
-                  id_cliente: Number(id_cliente),
-            },
-            data: 
-            {
-                estado: estado,
-            }
+        const result = await validarEstado.validate(req.body);
+        if(result.error)
+        {
+            res.send("ERROR! Verifique que el estado sea correcto");
+    
+        
             
-            })
-            res.json(clientes);
-        } catch (error) {
-            console.log(error)
-            next(error)
         }
+        else
+        {
+            try {
+      
+                const clientes = await prisma.clientes.update({
+                where:
+                {
+                      id_cliente: Number(id_cliente),
+                },
+                data: 
+                {
+                    estado: estado,
+                }
+                
+                })
+                res.json(clientes);
+            } catch (error) {
+                console.log(error)
+                next(error)
+            }
+        }
+       
     }
    
 }
