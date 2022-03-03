@@ -1,5 +1,18 @@
 const {PrismaClient} = require('@prisma/client') ;
 const prisma = new PrismaClient();
+const joi = require("@hapi/joi");
+
+const validar = joi.object({
+  nom_empleado:joi.string().min(3).required(),
+   apellido_empleado: joi.string().min(2).max(50).required(),
+   telefono_empleado: joi.string().min(8).max(20).required(),
+   id_ciudad: joi.number().integer().required(),
+   direccion_empleado: joi.string().min(10).max(50).required(),
+    id_rol: joi.number().integer().required(),
+   fnacimiento_empleado: joi.number().integer().required(),
+  Estado: joi.bool().required()
+});
+
 
 //listar empleados
 exports.listarEmpleados = async (req,res,next) =>{
@@ -15,6 +28,11 @@ exports.listarEmpleados = async (req,res,next) =>{
 exports.insertarEmpleados = async (req,res,next) =>{
     
     try {
+        const result = await validar.validate(req.body);
+        if(result.error){
+            res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+        }
+        else{
         const {nom_empleado , apellido_empleado,telefono_empleado, direccion_empleado,id_ciudad,id_rol,fnacimiento_empleado,Estado}= req.body;
         const empleados = await prisma.empleados.create({
           data:{ nom_empleado:nom_empleado,
@@ -28,7 +46,7 @@ exports.insertarEmpleados = async (req,res,next) =>{
         },
         include:{Ciudades:true,RolesEmpleados:true}
         })
-        res.json(empleados);
+        res.json(empleados);}
     } catch (error) {
         console.log(error)
         next(error);
@@ -60,14 +78,21 @@ exports.eliminarEmpleado= async (req,res) =>{
 }
 
 exports.actualizarEmpleados = async (req, res) => {
-    let { id_empleado } = req.query;
-    const { nom_empleado , apellido_empleado,telefono_empleado, direccion_empleado} = req.body;
-    let {Estado,id_ciudad,id_rol,fnacimiento_empleado} = req.body;
+    try {
+
+        const result = await validar.validate(req.body);
+        if(result.error){
+            res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+        }
+        else{
+        let { id_empleado } = req.query;
+    const { nom_empleado , apellido_empleado,telefono_empleado, direccion_empleado,Estado} = req.body;
+    let {id_ciudad,id_rol,fnacimiento_empleado} = req.body;
     id_empleado=parseInt(id_empleado);
     id_rol= parseInt(id_rol);
     fnacimiento_empleado= parseInt(fnacimiento_empleado);
       id_ciudad= parseInt(id_ciudad);
-    Estado=parseInt(Estado);
+   
     if (!await buscarEmpleado(id_empleado))
     {
         res.send("Este empleado no existe")
@@ -84,14 +109,16 @@ exports.actualizarEmpleados = async (req, res) => {
          id_rol:id_rol|| undefined,
          fnacimiento_empleado:fnacimiento_empleado|| undefined,
         Estado:Estado || undefined
-      }}).then((data)=>{
+      }})
+      .then((data)=>{
           console.log(data);
           res.send("Se actualizaron los datos");
-      }).catch((error)=>{
-          res.send("Error de datos");
-          console.log(error);
-      });
+      })} }
+    } catch (error) {
+        console.log(error)
+        next(error);
     }
+   
   };
   
 
