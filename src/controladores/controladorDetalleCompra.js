@@ -3,6 +3,20 @@ const prisma = new PrismaClient();
 const modeloCompra = prisma.compras;
 const modeloProducto = prisma.productos;
 const modeloDetalleCompra = prisma.detalleCompras;
+const joi = require("@hapi/joi");
+
+const validarAgregar = joi.object({
+    idProducto:joi.number().integer().required(),
+    idCompra: joi.number().required(),
+    precio:joi.number().required(),
+    cantidad: joi.number().integer().required()
+})
+const validarModificar = joi.object({
+    idProducto:joi.number().integer(),
+    idCompra: joi.number().integer(),
+    precio:joi.number(),
+    cantidad: joi.number().integer()
+})
 
 exports.listarDetalleCompras = async (req, res) => {
  const listarDetalleCompras = await modeloDetalleCompra.findMany();
@@ -16,10 +30,13 @@ exports.listarDetalleCompras = async (req, res) => {
 };
 
 exports.agregar = async (req, res) => {
-  const {idProducto,idCompra,precio,cantidad} = req.body;
+    try
+  {
+    await validarAgregar.validateAsync(req.body);
+      const {idProducto,idCompra,precio,cantidad} = req.body;
   await modeloDetalleCompra.create({
       data:{
-        id_producto:idProducto //A cambiar
+        Productos:{connect:{id_producto:idProducto}} 
         ,Compras:{connect:{id_compra:idCompra}} ,
         precio:precio,
         cantidad:cantidad
@@ -27,10 +44,18 @@ exports.agregar = async (req, res) => {
   }).then((data)=>{
       res.send("Registro almacenado");
       console.log(data);
-  }).catch((error)=>{
-      res.send("Error al guardar");
-      console.log(error);
-  })
+  });
+} catch(err){
+    console.log(err);
+    if (err.isJoi)
+    {
+      res.send(err.details[0].message)
+    }
+    else{
+      res.send("error inesperado");
+    }
+}
+
 };
 exports.eliminar = async (req, res) => {
  let {idDetalleCompra} = req.query;
@@ -57,6 +82,10 @@ exports.eliminar = async (req, res) => {
     
 };*/
 exports.actualizar = async (req, res) => {
+    try
+
+   { 
+    await validarModificar.validateAsync(req.body);
     let {idDetalleCompra} = req.query;
     idDetalleCompra = parseInt(idDetalleCompra);
     const{idProducto,idCompra,precio,cantidad} = req.body;
@@ -84,6 +113,16 @@ exports.actualizar = async (req, res) => {
            console.log(error);
        })
     }
+}   catch(err){
+    console.log(err);
+    if (err.isJoi)
+    {
+      res.send(err.details[0].message)
+    }
+    else{
+      res.send("error inesperado");
+    }
+}
 };
 
 

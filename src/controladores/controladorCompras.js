@@ -3,6 +3,21 @@ const prisma = new PrismaClient();
 const modeloCompra = prisma.compras;
 const modeloProveedor = prisma.proveedores;
 const modeloEmpleado = prisma.empleados;
+const joi = require("@hapi/joi");
+
+
+const validarAgregar = joi.object({
+    idProv:joi.number().required(),
+    idEmpleado:joi.number().required(),
+    isv:joi.number().required() ,
+    descuento: joi.number().required()
+})
+const validarModificar = joi.object({
+    idProv:joi.number(),
+    idEmpleado:joi.number(),
+    isv:joi.number(),
+    descuento: joi.number()
+})
 
 exports.listarCompras = async (req, res) => {
  const listarCompras = await modeloCompra.findMany();
@@ -16,11 +31,14 @@ exports.listarCompras = async (req, res) => {
 };
 
 exports.agregar = async (req, res) => {
-  const {idProv,idEmpleado,isv,descuento} = req.body;
-  await modeloCompra.create({
+    try 
+  {
+      await validarAgregar.validateAsync(req.body);
+      const {idProv,idEmpleado,isv,descuento} = req.body;
+      await modeloCompra.create({
       data:{
           Proveedores:{connect:{id_prov:idProv}},
-          id_empleado:idEmpleado, //Esto a cambiar
+          Empleados:{connect:{id_empleado:idEmpleado}}, //Esto a cambiar
           isv:isv,
           descuento:descuento,
           fecha_compra:new Date(Date.now()).toISOString() //Cambiar esto
@@ -32,6 +50,16 @@ exports.agregar = async (req, res) => {
       res.send("Error al guardar");
       console.log(error);
   })
+}catch(err){
+    console.log(err);
+  if (err.isJoi)
+  {
+    res.send(err.details[0].message)
+  }
+  else{
+    res.send("error inesperado");
+  }
+}
 };
 exports.eliminar = async (req, res) => {
  let {idCompra} = req.query;
@@ -58,7 +86,10 @@ exports.eliminar = async (req, res) => {
     
 };*/
 exports.actualizar = async (req, res) => {
-    let {idCompra} = req.query;
+    try 
+    {
+        await validarModificar.validateAsync(req.body);
+        let {idCompra} = req.query;
     idCompra = parseInt(idCompra);
     const{fechaCompra,idProv,idEmpleado,isv,descuento} = req.body;
     if (!await buscarCompra(idCompra))
@@ -72,7 +103,7 @@ exports.actualizar = async (req, res) => {
        },
         data:{
             Proveedores:{connect:{id_prov:idProv || undefined}},
-            id_empleado:idEmpleado || undefined, //Esto a cambiar
+            Empleados: { connect:{ id_empleado:idEmpleado || undefined}}, //Esto a cambiar
             isv:isv || undefined,
             descuento:descuento || undefined,
             fecha_compra:fechaCompra || undefined, //Cambiar esto
@@ -85,6 +116,16 @@ exports.actualizar = async (req, res) => {
            console.log(error);
        })
     }
+}   catch(err){
+    console.log(err);
+  if (err.isJoi)
+  {
+    res.send(err.details[0].message)
+  }
+  else{
+    res.send("error inesperado");
+  }
+}
 };
  
 
