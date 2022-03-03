@@ -88,6 +88,7 @@ model DireccionesEnvio {
   direccion_opcional String           @db.NVarChar(50)
   Ciudades           Ciudades         @relation(fields: [id_ciudad], references: [id_ciudad], onUpdate: NoAction, map: "FK_DireccionesEnvio_Ciudades")
   usuariosClientes   usuariosClientes @relation(fields: [id_usuarioCliente], references: [id_usuarioCliente], onUpdate: NoAction, map: "FK_DireccionesEnvio_usuariosClientes")
+  Venta              Venta[]
 }
 
 model Empleados {
@@ -146,6 +147,7 @@ model Productos {
   stock                Float
   descuento            Float?
   estado               Boolean
+  imagen               String?          @db.NVarChar(250)
   Categorias           Categorias       @relation(fields: [id_categoria], references: [id_categoria], onUpdate: NoAction, map: "FK_Productos_Categorias")
   Marcas               Marcas           @relation(fields: [id_marca], references: [id_marca], onUpdate: NoAction, map: "FK_Productos_Marcas")
   Proveedores          Proveedores      @relation(fields: [id_proveedor], references: [id_prov], onUpdate: NoAction, map: "FK_Productos_Proveedores")
@@ -206,15 +208,17 @@ model usuariosClientes {
 }
 
 model Venta {
-  id_Venta       Int              @id(map: "PK_Venta") @default(autoincrement())
-  fecha          DateTime         @db.Date
-  id_cliente     Int
-  RTN_estado     Boolean
-  ISV            Float
-  descuento      Float
-  Clientes       Clientes         @relation(fields: [id_cliente], references: [id_cliente], onUpdate: NoAction, map: "FK_Venta_Clientes")
-  DetallesVentas DetallesVentas[]
-  Envios         Envios[]
+  id_Venta          Int              @id(map: "PK_Venta") @default(autoincrement())
+  fecha             DateTime         @db.Date
+  id_cliente        Int
+  RTN_estado        Boolean
+  ISV               Float
+  id_direccionEnvio Int
+  descuento         Float
+  Clientes          Clientes         @relation(fields: [id_cliente], references: [id_cliente], onUpdate: NoAction, map: "FK_Venta_Clientes")
+  DireccionesEnvio  DireccionesEnvio @relation(fields: [id_direccionEnvio], references: [id_direccionEnvio], onUpdate: NoAction, map: "FK_Venta_DireccionesEnvio")
+  DetallesVentas    DetallesVentas[]
+  Envios            Envios[]
 }
 
 model Carrito {
