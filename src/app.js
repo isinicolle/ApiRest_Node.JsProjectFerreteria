@@ -1,7 +1,8 @@
 const { application } = require('express');
 const express = require('express');
 const morgan = require('morgan');
-const rutas = require('./rutas');
+const path = require('path');
+
 const rutaDepartamento = require('./rutas/rutaDepartamento');
 const rutaProveedor = require('./rutas/rutaProveedores');
 const rutaCompra = require('./rutas/rutaCompras');
@@ -10,6 +11,7 @@ const rutaCarrito = require('./rutas/rutaCarrito');
 const rutaCategoria = require('./rutas/rutaCategoria');
 const rutaMarca = require('./rutas/rutaMarcas');
 const app = express();
+app.use('/producto/img', express.static(path.join(__dirname, 'public/img')));
 app.use(morgan('dev'));
 app.use(express.urlencoded({extended:false}));
 app.use(express.json());
@@ -32,8 +34,8 @@ app.use('/api/rolesempleados/',require('./rutas/rutasRolesEmpleados'));
 app.use('/api/empresaenvios/',require('./rutas/rutasEmpresaEnvios'));
 app.use('/api/categoria/',require('./rutas/rutaCategoria'));
 app.use('/api/marca', require('./rutas/rutaMarcas'));
-//ENVIOS
 app.use('/api/envios', require('./rutas/rutaEnvios'));
+app.use('/api/imagen', require('./rutas/rutaImagen'));
 
 //VENTAS
 app.use('/api/ventas', require('./rutas/rutasVentas'));
