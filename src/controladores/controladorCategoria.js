@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 const ModeloCategoria = prisma.categorias;
 
 exports.listarCategoria = async(req, res)=>{
-    const listarCategoria = await ModeloCategoria.findAll();
+    const listarCategoria = await ModeloCategoria.findMany();
     if(listarCategoria.length == 0){
         res.send("No existen datos");
     }else{

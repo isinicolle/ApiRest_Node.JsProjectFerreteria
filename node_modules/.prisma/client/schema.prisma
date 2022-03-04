@@ -147,6 +147,7 @@ model Productos {
   stock                Float
   descuento            Float?
   estado               Boolean
+  imagen               String?          @db.NVarChar(250)
   Categorias           Categorias       @relation(fields: [id_categoria], references: [id_categoria], onUpdate: NoAction, map: "FK_Productos_Categorias")
   Marcas               Marcas           @relation(fields: [id_marca], references: [id_marca], onUpdate: NoAction, map: "FK_Productos_Marcas")
   Proveedores          Proveedores      @relation(fields: [id_proveedor], references: [id_prov], onUpdate: NoAction, map: "FK_Productos_Proveedores")
