@@ -1,6 +1,18 @@
 const {PrismaClient} = require('@prisma/client') ;
 const prisma = new PrismaClient();
 
+const joi = require("@hapi/joi");
+
+const validar = joi.object({
+    nom_usuarioEmpleado: joi.string().min(5).max(50).required(),
+    estado: joi.bool().required(),
+    contrasenia_empleado: joi.string().min(8).max(250).required(),
+    id_empleado: joi.number().integer().required(),
+    correo_empleado: joi.string().email().required(),
+
+});
+
+
 //listar Usuarios empleados
 exports.listarUsuarioEmpleados = async (req,res,next) =>{
     try {
@@ -15,16 +27,23 @@ exports.listarUsuarioEmpleados = async (req,res,next) =>{
 exports.insertarUsuarioEmpleados = async (req,res,next) =>{
     
     try {
-        const { id_usuarioEmpleado,nom_usuarioEmpleado ,contrasenia_empleado ,id_empleado}= req.body;
+        const result = await validar.validate(req.body);
+        if(result.error){
+            res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+        }
+        else{
+        const { nom_usuarioEmpleado ,estado,contrasenia_empleado ,id_empleado,correo_empleado}= req.body;
         const usuarioEmpleados = await prisma.usuarioEmpleados.create({
-          data:{  id_usuarioEmpleado:id_usuarioEmpleado,
+          data:{
           nom_usuarioEmpleado:nom_usuarioEmpleado,
+          estado:estado,
           contrasenia_empleado:contrasenia_empleado,
+          correo_empleado:correo_empleado,
           Empleados:{connect:{id_empleado:id_empleado}},
         },
         include:{Empleados:true}
         })
-        res.json(usuarioEmpleados);
+        res.json(usuarioEmpleados);}
     } catch (error) {
         console.log(error)
         next(error);
@@ -57,11 +76,18 @@ exports.eliminarUsuarioEmpleados= async (req,res) =>{
 }
 
 exports.actualizarUsuarioEmpleados = async (req, res) => {
-    let { id_usuarioEmpleado } = req.query;
-    const {nom_usuarioEmpleado ,contrasenia_empleado }= req.body;
-    let {id_empleado} = req.body;
+    try {
+        const result = await validar.validate(req.body);
+        if(result.error){
+            res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+        }
+        else{
+        let { id_usuarioEmpleado } = req.query;
+    const {nom_usuarioEmpleado ,contrasenia_empleado,correo_empleado}= req.body;
+    let {id_empleado,estado} = req.body;
     id_usuarioEmpleado=parseInt(id_usuarioEmpleado);
       id_empleado= parseInt(id_empleado);
+      estado=parseInt(estado);
     if (!await buscarUsuarioEmpleado(id_usuarioEmpleado))
     {
         res.send("Este usuario no existe")
@@ -71,15 +97,19 @@ exports.actualizarUsuarioEmpleados = async (req, res) => {
           where:{id_usuarioEmpleado:id_usuarioEmpleado},
       data:{
         nom_usuarioEmpleado:nom_usuarioEmpleado || undefined,
+        estado:estado || undefined,
           contrasenia_empleado:contrasenia_empleado || undefined,
+          correo_empleado:correo_empleado || undefined,
           id_empleado:id_empleado || undefined,
       }}).then((data)=>{
           console.log(data);
           res.send("Se actualizaron los datos");
-      }).catch((error)=>{
-          res.send("Error de datos");
-          console.log(error);
-      });
+      }) }
+    }
+}
+     catch (error) {
+        res.send("Error de datos");
+        console.log(error);
     }
   };
 

@@ -1,4 +1,5 @@
 const {PrismaClient} = require('@prisma/client') ;
+const { on } = require('nodemailer/lib/xoauth2');
 const prisma = new PrismaClient();
 
 const joi = require("@hapi/joi");
@@ -45,6 +46,32 @@ exports.buscarDireccionEnvio = async (req,res,next) =>{
         }
        
            
+    }
+}
+
+exports.DireccionEnvioXUsuario = async (req,res,next) =>{
+    const {id_usuarioCliente} =req.body;
+
+    if(!id_usuarioCliente)
+    {
+        res.send("Envie el id de cliente");
+    }
+    else
+    {
+        try {
+            const buscarDireccionEnvio = await prisma.direccionesEnvio.findMany(
+                {
+                    where:
+                    {
+                        id_usuarioCliente: Number(id_usuarioCliente),
+                    },
+                    select:{id_direccionEnvio:true,direccion:true,direccion_opcional:true,Ciudades:{select:{id_ciudad:true,nombre_ciudad:true,codigoPostal:true,Departamentos:{select:{id_departamento:true,nombreDepartamento:true}}}}}
+                })//
+                res.json(buscarDireccionEnvio)
+        } 
+        catch (error) {
+            next(error)
+        }     
     }
 }
 

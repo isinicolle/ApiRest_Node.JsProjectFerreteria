@@ -1,6 +1,15 @@
 const {PrismaClient} = require('@prisma/client') ;
 const prisma = new PrismaClient();
+const joi = require("@hapi/joi");
 
+const validar = joi.object({
+    nombre_empresa: joi.string().min(3).max(50).required(),
+    direccion_empresa: joi.string().min(3).max(50).required(),
+    telefono_empresa: joi.string().min(8).max(15).required(),
+    id_ciudad: joi.number().integer().required(),
+    estado: joi.bool().required(),
+    correo_empresa: joi.string().min(10).max(50).email().required(),
+});
 //listar empresaEnvios
 exports.listarEmpresaEnvios = async (req,res,next) =>{
     try {
@@ -15,10 +24,14 @@ exports.listarEmpresaEnvios = async (req,res,next) =>{
 exports.insertarEmpresaEnvios = async (req,res,next) =>{
     
     try {
-        const { id_empresaEnvio,nombre_empresa,direccion_empresa,telefono_empresa,id_ciudad ,estado,correo_empresa}= req.body;
+        const result = await validar.validate(req.body);
+        if(result.error){
+            res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+        }
+        else{
+        const {nombre_empresa,direccion_empresa,telefono_empresa,id_ciudad ,estado,correo_empresa}= req.body;
         const empresaEnvios = await prisma.empresasEnvio.create({
-          data:{  id_empresaEnvio:id_empresaEnvio, 
-            nombre_empresa:nombre_empresa,   
+          data:{ nombre_empresa:nombre_empresa,   
             direccion_empresa:direccion_empresa,
             telefono_empresa:telefono_empresa,  
             Ciudades:{connect:{id_ciudad:id_ciudad}},   
@@ -27,7 +40,7 @@ exports.insertarEmpresaEnvios = async (req,res,next) =>{
         },
         include:{Ciudades:true}
         })
-        res.json(empresaEnvios);
+        res.json(empresaEnvios);}
     } catch (error) {
         console.log(error)
         next(error);
@@ -60,7 +73,13 @@ exports.eliminarEmpresaEnvios= async (req,res) =>{
 }
 
 exports.actualizarEmpresaEnvios = async (req, res) => {
-    let { id_empresaEnvio } = req.query;
+    try {
+        const result = await validar.validate(req.body);
+        if(result.error){
+            res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+        }
+        else{
+        let { id_empresaEnvio } = req.query;
     const { nombre_empresa,direccion_empresa,telefono_empresa,correo_empresa}= req.body;
     let {estado,id_ciudad} = req.body;
     id_empresaEnvio=parseInt(id_empresaEnvio);
@@ -83,11 +102,13 @@ exports.actualizarEmpresaEnvios = async (req, res) => {
       }}).then((data)=>{
           console.log(data);
           res.send("Se actualizaron los datos");
-      }).catch((error)=>{
-          res.send("Error de datos");
-          console.log(error);
-      });
+      })
+    }}
+    } catch (error) {
+        res.send("Error de datos");
+        console.log(error);
     }
+    
   };
 
 
