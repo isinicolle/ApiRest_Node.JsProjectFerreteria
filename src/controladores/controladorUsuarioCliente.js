@@ -3,11 +3,27 @@ const prisma = new PrismaClient();
 
 const bcrypt = require ('bcrypt');
 const emailer = require('../configuraciones/emailer');
+const passport = require('../configuraciones/passport');
+const ModeloUsuario = prisma.usuariosClientes;
+const msj = require('../configuraciones/mensaje');
+const joi = require("@hapi/joi");
 
 
+const validar = joi.object({
+    nombre_usuario: joi.string().min(2).required(),
+    contraenia_usuario: joi.string().min(6).required(),
+    id_cliente: joi.number().integer().required(),
+    correo_usuario: joi.string().min(2).required(),
+});
+const validarEstado = joi.object({
+    estado: joi.boolean().required(),
 
+});
 
+const validarClave = joi.object({
+    contraenia_usuario: joi.string().min(6).required(),
 
+});
 
 exports.listarUsuarioCliente = async (req,res,next) =>{
     try {
@@ -45,6 +61,60 @@ exports.buscarUsuarioCliente = async (req,res,next) =>{
     }
 }
 
+exports.ValidarAutenticado = passport.ValidarAutenticado;
+
+exports.loginUsuarioCliente = async (req,res,next) =>{
+    const {correo_usuario,contraenia_usuario} =req.body;
+
+    if(!correo_usuario || !contraenia_usuario)
+    {
+        res.send("Debe ingresar todos los datos");
+    }
+    else
+    {
+        try {
+            const buscarUsuarioCliente = await prisma.usuariosClientes.findFirst(
+                {
+                    where:
+                    {
+                        correo_usuario: correo_usuario,
+                    },//
+                })//
+                if(buscarUsuarioCliente!=null){
+                if(contraenia_usuario==buscarUsuarioCliente.contraenia_usuario){
+                    if(buscarUsuarioCliente.estado==true){
+
+                        const token = passport.generarToken({correo_usuario: buscarUsuarioCliente.correo_usuario});
+                        console.log(token);
+
+                        const data = {
+                            token: token,
+                            data: buscarUsuarioCliente
+                        };
+                        msj("Bienvenido", 200, data, res);
+                    }
+                    else{
+                        res.send("Este usuario esta inactivo, comunicarse con servicio al cliente")
+                    }
+                }
+                else{
+                    res.send("Usuario o contraseña incorrecto")
+                }
+            }
+            else{
+                res.send("Usuario o contraseña incorrecto")
+            }
+        } catch (error) {
+            console.log(error);
+            res.send("Ha ocurrido un error inesperado");
+        }
+    }
+};
+
+exports.Error = (req, res) => {
+    msj("Debe estar autenticado", 200, [], res);
+};
+
 exports.insertarUsuariocliente = async (req,res,next) =>{
 
     const {nombre_usuario,contraenia_usuario,id_cliente,correo_usuario} = req.body;
@@ -56,11 +126,18 @@ exports.insertarUsuariocliente = async (req,res,next) =>{
         })
         res.json(clientes);
 */
+        const result = await validar.validate(req.body);
+        if(result.error)
+        {
+            res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
 
-        if(!nombre_usuario || !contraenia_usuario || !id_cliente || !correo_usuario)
+        
+            
+        }
+       /* if(!nombre_usuario || !contraenia_usuario || !id_cliente || !correo_usuario)
         {
             res.send('No mandar datos vacios');
-        }
+        }*/
         else
         {
             if(contraenia_usuario.length < 6)
@@ -70,7 +147,6 @@ exports.insertarUsuariocliente = async (req,res,next) =>{
             else
             {
                
-
             const passwordHash = await bcrypt.hash(contraenia_usuario,12)
 
             const clientes = await prisma.usuariosClientes.create({
@@ -102,8 +178,7 @@ exports.insertarUsuariocliente = async (req,res,next) =>{
 }
 
 
-
-//elimianr usuario del cliente
+//eliminar usuario del cliente
 exports.eliminarUsuariocliente= async (req,res) =>{
     const {id_usuarioCliente} =req.query;
 
@@ -142,28 +217,38 @@ exports.actualizarCliente= async (req,res) =>{
     }
     else
     {
-        try {
-            const passwordHash = await bcrypt.hash(contraenia_usuario,12)
-            const clientes = await prisma.usuariosClientes.update({
-            where:
-            {
-                  id_usuarioCliente: Number(id_usuarioCliente),
-            },
-            data: 
-            {
-                nombre_usuario: nombre_usuario,
-                contraenia_usuario: passwordHash,
-                id_cliente: id_cliente,
-                correo_usuario: correo_usuario,
-            }
-            
-            })
-            
-            res.json(clientes);
-        } catch (error) {
-            console.log(error)
-            next(error)
+        const result = await validar.validate(req.body);
+        if(result.error)
+        {
+            res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+    
         }
+        else
+        {
+            try {
+                const passwordHash = await bcrypt.hash(contraenia_usuario,12)
+                const clientes = await prisma.usuariosClientes.update({
+                where:
+                {
+                      id_usuarioCliente: Number(id_usuarioCliente),
+                },
+                data: 
+                {
+                    nombre_usuario: nombre_usuario,
+                    contraenia_usuario: passwordHash,
+                    id_cliente: id_cliente,
+                    correo_usuario: correo_usuario,
+                }
+                
+                })
+                
+                res.json(clientes);
+            } catch (error) {
+                console.log(error)
+                next(error)
+            }
+        }
+       
     }
    
    
@@ -176,28 +261,41 @@ exports.actualizarEstadoCliente= async (req,res) =>{
 
     if(!id_usuarioCliente)
     {
-        res.send("Envie el id del usuario del cliente");
+        res.send("Debe enviar el id del usuario");
     }
     else
     {
-        try {
-      
-            const clientes = await prisma.usuariosClientes.update({
-            where:
-            {
-                id_usuarioCliente: Number(id_usuarioCliente),
-            },
-            data: 
-            {
-                estado: estado,
-            }
+
+        const result = await validarEstado.validate(req.body);
+        if(result.error)
+        {
+            res.send("ENVIE UN DATO TRUE/FALSE PARA EL ESTADO");
+    
+        
             
-            })
-            res.json(clientes);
-        } catch (error) {
-            console.log(error)
-            next(error)
         }
+        else
+        {
+            try {
+      
+                const clientes = await prisma.usuariosClientes.update({
+                where:
+                {
+                    id_usuarioCliente: Number(id_usuarioCliente),
+                },
+                data: 
+                {
+                    estado: estado,
+                }
+                
+                })
+                res.json(clientes);
+            } catch (error) {
+                console.log(error)
+                next(error)
+            }
+        }
+     
     }
    
 }
@@ -220,7 +318,7 @@ exports.recuperarContrasena = async (req, res, next)=>
 
         contraenia_usuario = (Math.floor(Math.random() * (99999 - 11111)) + 11111).toString();
         const passwordHash = await bcrypt.hash(contraenia_usuario,12)
-
+      
         try {
             
             var buscarUser = await prisma.usuariosClientes.findFirst({
@@ -246,7 +344,7 @@ exports.recuperarContrasena = async (req, res, next)=>
 
 
 
-
+            emailer.sendMailPassword(clientes.correo_usuario,contraenia_usuario);
             res.json("Correo: "+clientes.correo_usuario+" Clave nueva: "+contraenia_usuario+" Ingrese nuevamente para cambiar su clave");
 
 
@@ -259,38 +357,48 @@ exports.recuperarContrasena = async (req, res, next)=>
    
 };
 
-exports.loginUsuarioCliente = async (req,res,next) =>{
-    const {nombre_usuario,contraenia_usuario} =req.body;
+exports.actualizarClave= async (req,res) =>{
+    const {id_usuarioCliente} = req.query;
+    const {contraenia_usuario} = req.body;
 
-    if(!nombre_usuario || !contraenia_usuario)
+
+    if(!id_usuarioCliente)
     {
-        res.send("Debe ingresar todos los datos");
+        res.send("Envie el id del usuario del cliente");
     }
     else
     {
-        try {
-            const buscarUsuarioCliente = await prisma.usuariosClientes.findFirst(
-                {
-                    where:
-                    {
-                        nombre_usuario: nombre_usuario,
-                    },//
-                })//
-                if(contraenia_usuario==buscarUsuarioCliente.contraenia_usuario){
-                    if(buscarUsuarioCliente.estado==true){
-                        res.json(buscarUsuarioCliente);
-                    }
-                    else{
-                        res.send("Este usuario esta inactivo, comunicarse con servicio al cliente")
-                    }
-                }
-                else{
-                    res.send("Usuario o contraseña incorrecto")
-                }
-        } catch (error) {
-            next(error),
-            res.send("Usuario o contraseña incorrecto");
-        }
+        const result = await validarClave.validate(req.body);
 
+        if(result.error){
+            res.send("ERROR! Verifique que su clave tenga mas de 6 digitos");
+        }
+        else
+        {
+            try {
+                const passwordHash = await bcrypt.hash(contraenia_usuario,12)
+                const clientes = await prisma.usuariosClientes.update({
+                where:
+                {
+                      id_usuarioCliente: Number(id_usuarioCliente),
+                },
+                data: 
+                {
+            
+                    contraenia_usuario: passwordHash,
+       
+                }
+                
+                })
+                
+                res.json(clientes);
+            } catch (error) {
+                console.log(error)
+                next(error)
+            }
+        }
+      
     }
+   
+   
 }
