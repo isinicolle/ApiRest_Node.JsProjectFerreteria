@@ -11,6 +11,8 @@ const validar = joi.object({
     nom_cliente: joi.string().min(2).required(),
     apellido_cliente: joi.string().min(2).required(),
     RTN: joi.string().min(2).required(),
+    direccion_cliente:  joi.string().min(2).required(),
+    id_ciudad: joi.number().integer().required(),
     tel_cliente:  joi.string().min(2).required(),
     estado: joi.boolean().required(),
     DNI_Cliente: joi.string().min(2).required(),
@@ -22,8 +24,6 @@ const validarUpdate = joi.object({
     nom_cliente: joi.string().min(2).required(),
     apellido_cliente: joi.string().min(2).required(),
     RTN: joi.string().min(2).required(),
-    direccion_cliente:  joi.string().min(2).required(),
-    id_ciudad: joi.number().integer().required(),
     tel_cliente:  joi.string().min(2).required(),
     DNI_Cliente: joi.string().min(2).required(),
     
