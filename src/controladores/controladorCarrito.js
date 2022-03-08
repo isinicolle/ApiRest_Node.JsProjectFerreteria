@@ -13,7 +13,11 @@ exports.MostrarCarrito= async (req,res)=>{
     idUsuario = parseInt(idUsuario);
     let Carrito = await modeloCarrito.findFirst({
         where:{id_usuarioCliente:idUsuario},
-        select:{CarritoItem:{select:{Productos:true,cantidad:true}, }}});
+        select:{CarritoItem:{select:{Productos:true,Productos:{include:{Marcas:true,Categorias:true}},cantidad:true}, }
+            }
+
+
+});
     Carrito = await calcularPrecio(Carrito);
     res.json(Carrito); 
 };
@@ -34,7 +38,7 @@ exports.nuevoCarrito= async(req,res)=>{
 };
 exports.agregarProducto = async(req,res)=>{
     let {idUsuario} = req.query;
-    let {idProducto} = req.body;
+    let {idProducto} = req.body; 
     idUsuario = parseInt(idUsuario);
     idProducto = parseInt(idProducto);
     let{Cantidad} = req.body;
@@ -104,13 +108,18 @@ exports.modificarCarrito = async(req,res)=>{
     });
 };
     async function  calcularPrecio(Carrito){
-            let suma=0;
-            Carrito.CarritoItem.forEach(
-                async function (elemento){
-                    elemento.total=elemento.Productos.precio_actual*elemento.cantidad;
-                    suma+=elemento.total;
-                }
-            );
-            Carrito.totalCarrito=suma;
-            return Carrito;
+            if(!Carrito){
+                return 0
+            }else{
+
+                let suma=0;
+                Carrito.CarritoItem.forEach(
+                    async function (elemento){
+                        elemento.total=elemento.Productos.precio_actual*elemento.cantidad;
+                        suma+=elemento.total;
+                    }
+                );
+                Carrito.totalCarrito=suma;
+                return Carrito;
+            }
     }

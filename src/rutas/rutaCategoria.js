@@ -9,4 +9,4 @@ router.post('/guardarCategoria', controladorCategoria.guardarCategoria);
 router.put('/modificarCategoria', controladorCategoria.ModificarCategoria);
 router.delete('/eliminarCategoria', controladorCategoria.eliminarCategoria);
 
-module.exports=router;
+module.exports=router; 
