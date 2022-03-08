@@ -45,8 +45,8 @@ exports.eliminarProducto = async (req, res) => {
 }
 
 exports.buscarProducto = async (req, res) => {
-    const {id} = req.query;
-    if(!id) {
+    const {id_producto} = req.query;
+    if(!id_producto) {
         res.send("Envie el id de registro");
     }
     else {
@@ -54,8 +54,10 @@ exports.buscarProducto = async (req, res) => {
             const buscarProducto = await prisma.productos.findUnique(
                 {
                     where: {
-                        id_producto: Number(id),
-                    }
+                        id_producto: Number(id_producto),
+                    },
+                    select:{descripcion_producto:true,cantidad_por_unidad:true,precio_actual:true,stock:true,descuento:true,imagen:true,Marcas:{select:{id_marca:true,descripcion_marca:true}},Categorias:{select:{id_categoria:true,descripcion_categoria:true}}}
+
                 }
             )
             res.json(buscarProducto)
