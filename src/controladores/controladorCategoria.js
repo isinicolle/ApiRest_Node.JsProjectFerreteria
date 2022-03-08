@@ -97,11 +97,7 @@ exports.listarCategoriaPorProducto = async (req, res) => {
         {
             id_categoria: idcategoria
         },
-        select:{
-            Productos:{
-                select:{descripcion_producto:true, precio_actual: true},
-            }
-        }
+       select:{Productos:true}
     });
     res.json(categoria);
 }

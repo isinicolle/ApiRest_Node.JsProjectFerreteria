@@ -25,6 +25,7 @@ app.use('/api/compra/',rutaCompra);
 app.use('/api/detallecompra/',rutaDetalleCompra);
 app.use('/api/categoria/',rutaCategoria);
 app.use('/api/marca', rutaMarca);
+app.use('/img',express.static(__dirname+'/public/img'));
 app.use('/api/clientes/',require('./rutas/rutaclientes'));
 app.use('/api/direccionesEnvio/',require('./rutas/rutaDireccionesEnvio'));
 app.use('/api/usuarioCliente',require('./rutas/rutaUsuarioCliente'));

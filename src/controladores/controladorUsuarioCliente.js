@@ -81,7 +81,7 @@ exports.loginUsuarioCliente = async (req,res,next) =>{
                     },//
                 })//
                 if(buscarUsuarioCliente!=null){
-                if(contraenia_usuario==buscarUsuarioCliente.contraenia_usuario){
+                if(contraenia_usuario== buscarUsuarioCliente.contraenia_usuario){
                     if(buscarUsuarioCliente.estado==true){
 
                         const token = passport.generarToken({correo_usuario: buscarUsuarioCliente.correo_usuario});

@@ -98,9 +98,7 @@ exports.ProductoPorMarca = async (req, res) => {
                 id_marca: idmarca
             },
             select:{
-                Productos:{
-                    select:{descripcion_producto:true, precio_actual: true},
-                }
+                Productos:true
             }
         });
         res.json(marca);
