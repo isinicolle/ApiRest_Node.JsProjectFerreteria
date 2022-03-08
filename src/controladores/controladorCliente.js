@@ -56,7 +56,7 @@ exports.buscarCliente = async (req,res,next) =>{
 
     if(!id_cliente)
     {
-        res.send("Envie el id de cliente");
+        res.json("Envie el id de cliente");
     }
     else
     {
@@ -83,7 +83,7 @@ exports.insertarcliente = async (req,res,next) =>{
     const result = await validar.validate(req.body);
     if(result.error)
     {
-        res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+        res.json("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
 
     
         
@@ -109,7 +109,7 @@ exports.eliminarCliente= async (req,res) =>{
 
     if(!id_cliente)
     {
-        res.send("Envie el id de registro");
+        res.json("Envie el id de registro");
     }
     else
     {
@@ -135,19 +135,19 @@ exports.eliminarCliente= async (req,res) =>{
 
 exports.actualizarCliente= async (req,res) =>{
     const {id_cliente} =req.query;
-    const {nom_cliente,apellido_cliente, RTN , DNI_Cliente , tel_cliente, direccion_cliente, id_ciudad} = req.body;
+    const {nom_cliente,apellido_cliente, RTN , DNI_Cliente , tel_cliente} = req.body;
 
 
     if(!id_cliente)
     {
-        res.send("Envie el id del cliente");
+        res.json("Envie el id del cliente");
     }
     else
     {
         const result = await validarUpdate.validate(req.body);
         if(result.error)
         {
-            res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+            res.json("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
     
         
             
@@ -168,8 +168,6 @@ exports.actualizarCliente= async (req,res) =>{
                     RTN: RTN,
                     DNI_Cliente: DNI_Cliente,
                     tel_cliente: tel_cliente,
-                    direccion_cliente: direccion_cliente,
-                    id_ciudad: id_ciudad,
                 }
                 
                 })
@@ -193,14 +191,14 @@ exports.actualizarEstadoCliente= async (req,res) =>{
 
     if(!id_cliente)
     {
-        res.send("Envie el id del cliente");
+        res.json("Envie el id del cliente");
     }
     else
     {
         const result = await validarEstado.validate(req.body);
         if(result.error)
         {
-            res.send("ERROR! Verifique que coloco correctamente el estado");
+            res.json("ERROR! Verifique que coloco correctamente el estado");
     
         
             
