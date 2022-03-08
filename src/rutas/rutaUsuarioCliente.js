@@ -17,5 +17,6 @@ router.put('/actualizarclave', controladorUsuarioCliente.actualizarClave);
 router.put('/recoveryclave', controladorUsuarioCliente.recuperarContrasena);
 
 router.get('/loginUsuarioCliente', controladorUsuarioCliente.loginUsuarioCliente);
+router.get('/error',controladorUsuarioCliente.Error);
 
 module.exports=router; 
