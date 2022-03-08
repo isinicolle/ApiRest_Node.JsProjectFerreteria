@@ -36,6 +36,7 @@ app.use('/api/categoria/',require('./rutas/rutaCategoria'));
 app.use('/api/marca', require('./rutas/rutaMarcas'));
 app.use('/api/envios', require('./rutas/rutaEnvios'));
 app.use('/api/imagen', require('./rutas/rutaImagen'));
+app.use('/api/productos', require('./rutas/rutaProductos'));
 
 //VENTAS
 app.use('/api/ventas', require('./rutas/rutasVentas'));
