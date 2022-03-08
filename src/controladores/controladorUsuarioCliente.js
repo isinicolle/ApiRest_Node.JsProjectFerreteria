@@ -81,7 +81,7 @@ exports.loginUsuarioCliente = async (req,res,next) =>{
                     },//
                 })//
                 if(buscarUsuarioCliente!=null){
-                if(contraenia_usuario== buscarUsuarioCliente.contraenia_usuario){
+                if(bcrypt.compareSync(contraenia_usuario,buscarUsuarioCliente.contraenia_usuario)){
                     if(buscarUsuarioCliente.estado==true){
 
                         const token = passport.generarToken({correo_usuario: buscarUsuarioCliente.correo_usuario});
@@ -94,6 +94,7 @@ exports.loginUsuarioCliente = async (req,res,next) =>{
                         msj("Bienvenido", 200, data, res);
                     }
                     else{
+                        
                         res.send("Este usuario esta inactivo, comunicarse con servicio al cliente")
                     }
                 }

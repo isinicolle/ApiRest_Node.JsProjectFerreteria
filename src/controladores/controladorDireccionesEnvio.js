@@ -50,7 +50,7 @@ exports.buscarDireccionEnvio = async (req,res,next) =>{
 }
 
 exports.DireccionEnvioXUsuario = async (req,res,next) =>{
-    const {id_usuarioCliente} =req.body;
+    const {id_usuarioCliente} =req.query;
 
     if(!id_usuarioCliente)
     {
