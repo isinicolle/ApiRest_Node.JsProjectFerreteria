@@ -3,7 +3,9 @@ const prisma = new PrismaClient();
 
 const bcrypt = require ('bcrypt');
 const emailer = require('../configuraciones/emailer');
-
+const passport = require('../configuraciones/passport');
+const ModeloUsuario = prisma.usuariosClientes;
+const msj = require('../configuraciones/mensaje');
 const joi = require("@hapi/joi");
 const { text } = require('express');
 
@@ -59,11 +61,12 @@ exports.buscarUsuarioCliente = async (req,res,next) =>{
     }
 }
 
+exports.ValidarAutenticado = passport.ValidarAutenticado;
 
 exports.loginUsuarioCliente = async (req,res,next) =>{
-    const {nombre_usuario,contraenia_usuario} =req.body;
+    const {correo_usuario,contraenia_usuario} =req.body;
 
-    if(!nombre_usuario || !contraenia_usuario)
+    if(!correo_usuario || !contraenia_usuario)
     {
         res.send("Debe ingresar todos los datos");
     }
@@ -74,13 +77,21 @@ exports.loginUsuarioCliente = async (req,res,next) =>{
                 {
                     where:
                     {
-                        nombre_usuario: nombre_usuario,
+                        correo_usuario: correo_usuario,
                     },//
                 })//
                 if(buscarUsuarioCliente!=null){
                 if(contraenia_usuario==buscarUsuarioCliente.contraenia_usuario){
                     if(buscarUsuarioCliente.estado==true){
-                        res.json(buscarUsuarioCliente);
+
+                        const token = passport.generarToken({correo_usuario: buscarUsuarioCliente.correo_usuario});
+                        console.log(token);
+
+                        const data = {
+                            token: token,
+                            data: buscarUsuarioCliente
+                        };
+                        msj("Bienvenido", 200, data, res);
                     }
                     else{
                         res.send("Este usuario esta inactivo, comunicarse con servicio al cliente")
@@ -97,9 +108,12 @@ exports.loginUsuarioCliente = async (req,res,next) =>{
             console.log(error);
             res.send("Ha ocurrido un error inesperado");
         }
-     
     }
-}
+};
+
+exports.Error = (req, res) => {
+    msj("Debe estar autenticado", 200, [], res);
+};
 
 exports.insertarUsuariocliente = async (req,res,next) =>{
 
@@ -133,7 +147,6 @@ exports.insertarUsuariocliente = async (req,res,next) =>{
             else
             {
                
-
             const passwordHash = await bcrypt.hash(contraenia_usuario,12)
 
             const clientes = await prisma.usuariosClientes.create({
@@ -164,8 +177,7 @@ exports.insertarUsuariocliente = async (req,res,next) =>{
 }
 
 
-
-//elimianr usuario del cliente
+//eliminar usuario del cliente
 exports.eliminarUsuariocliente= async (req,res) =>{
     const {id_usuarioCliente} =req.query;
 

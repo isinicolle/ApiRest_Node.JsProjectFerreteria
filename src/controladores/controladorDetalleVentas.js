@@ -1,5 +1,18 @@
 const {PrismaClient} = require('@prisma/client') ;
 const prisma = new PrismaClient();
+const joi = require("@hapi/joi");
+
+const validar = joi.object({
+    id_detalleVenta: joi.optional(),
+    id_producto: joi.number().integer().required(),
+    id_venta: joi.number().integer().required(),
+    precio: joi.number().required(),
+    cantidad: joi.number().integer().required()
+});
+
+const validar2 = joi.object({
+    
+});
 
 exports.listar = async (req,res,next) => {
     try{
@@ -18,11 +31,18 @@ exports.listar = async (req,res,next) => {
 
  exports.guardar = async (req,res,next) =>{
    try {
-       const ventas = await prisma.detallesVentas.create({
-           data: req.body,
-       })
-       //res.json(ventas);
-       res.send("Resgistro de Detalle de Venta Insertado")
+        const result = await validar.validateAsync(req.body);
+        if(result.error){
+            res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+        }
+        else{
+            const ventas = await prisma.detallesVentas.create({
+                data: req.body,
+            })
+            //res.json(ventas);
+            res.send("Registro de Detalle de Venta Insertado");
+        }
+       
    } catch (error) {
        console.log(error)
        next(error);
@@ -40,15 +60,22 @@ exports.actualizar = async (req,res,next) =>{
    else
    {
        try {
-           const actualizarVentaDetalle = await prisma.detallesVentas.update({
-                   where:
-                   {
-                     id_detalleVenta: Number(id),
-                   },
-                   data: {id_producto,id_venta,precio,cantidad},
-               })
-               //res.json(actualizarVentaDetalle)
-               res.send("Registro Actualizado");
+            const result = await validar.validate(req.body);
+            if(result.error){
+                res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+            }
+            else{
+                const actualizarVentaDetalle = await prisma.detallesVentas.update({
+                    where:
+                    {
+                      id_detalleVenta: Number(id),
+                    },
+                    data: {id_producto,id_venta,precio,cantidad},
+                })
+                //res.json(actualizarVentaDetalle)
+                res.send("Registro Actualizado");
+            }
+           
        } catch (error) {
            next(error)
        }
