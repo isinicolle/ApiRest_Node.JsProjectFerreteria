@@ -167,8 +167,8 @@ exports.buscarId = async (req,res,next) =>{
     }).catch((err)=>{
         console.log(err);
     });   
-
-       //Añadir el detalle
+ 
+       //Añadir el detalle 
        
        Carrito.CarritoItem.forEach(
         async function (elemento){
