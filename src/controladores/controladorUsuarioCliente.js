@@ -88,58 +88,26 @@ exports.loginUsuarioCliente = async (req,res,next) =>{
 }
 
 exports.insertarUsuariocliente = async (req,res,next) =>{
+    const {nombre_usuario,contraenia_usuario, correo_usuario}= req.body;
+    const passwordHash = await bcrypt.hash(contraenia_usuario,12);
 
-    const {nombre_usuario,contraenia_usuario,id_cliente,correo_usuario} = req.body;
-
-
-    try {
-      /*  const clientes = await prisma.usuariosClientes.create({
-            data: req.body,
+        await prisma.usuariosClientes.create({
+          data:{ 
+            nombre_usuario: nombre_usuario,
+            contraenia_usuario: passwordHash,
+            correo_usuario: correo_usuario,
+            Clientes:{connect:{id_cliente: Number(7)}},
+            estado:true
+        },
         })
-        res.json(clientes);
-*/
-
-        if(!nombre_usuario || !contraenia_usuario || !id_cliente || !correo_usuario)
-        {
-            res.send('No mandar datos vacios');
-        }
-        else
-        {
-            if(contraenia_usuario.length < 6)
-            {
-                res.send('La clave debe ser menor a 6 caracteres');
-            } 
-            else
-            {
-               
-
-            const passwordHash = await bcrypt.hash(contraenia_usuario,12)
-
-            const clientes = await prisma.usuariosClientes.create({
-            data: 
-            {
-                nombre_usuario: nombre_usuario,
-                contraenia_usuario: passwordHash,
-                id_cliente: Number(7),
-                correo_usuario: correo_usuario,
-                estado : true,
-            }
-                })
-       
-                console.log({contraenia_usuario,passwordHash});
-        
-                emailer.sendMail(clientes.correo_usuario);
-                res.json("Registro logrado con exito");
-            //
-            }
-         
-        }
-   
-       
-    } catch (error) {
-        console.log(error)
-        next(error);
-    }
+        .then((data) => {
+            console.log(data);
+            res.send(data);
+          })
+          .catch((err) => {
+            console.log(err);
+            res.send("datos");
+          });
 }
 
 
@@ -175,14 +143,6 @@ exports.eliminarUsuariocliente= async (req,res) =>{
 exports.actualizarCliente= async (req,res) =>{
     const {id_usuarioCliente} =req.query;
     const {nombre_usuario,contraenia_usuario,id_cliente,correo_usuario} = req.body;
-
-
-    if(!id_usuarioCliente)
-    {
-        res.send("Envie el id del usuario del cliente");
-    }
-    else
-    {
         try {
             const passwordHash = await bcrypt.hash(contraenia_usuario,12)
             const clientes = await prisma.usuariosClientes.update({
@@ -206,9 +166,6 @@ exports.actualizarCliente= async (req,res) =>{
             next(error)
         }
     }
-   
-   
-}
 
 exports.actualizarEstadoCliente= async (req,res) =>{
     const {id_usuarioCliente} =req.query;
