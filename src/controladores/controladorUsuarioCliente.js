@@ -141,7 +141,7 @@ exports.insertarUsuariocliente = async (req,res,next) =>{
             {
                 nombre_usuario: nombre_usuario,
                 contraenia_usuario: passwordHash,
-                id_cliente: id_cliente,
+                id_cliente: Number(7),
                 correo_usuario: correo_usuario,
                 estado : true,
             }
@@ -151,7 +151,6 @@ exports.insertarUsuariocliente = async (req,res,next) =>{
         
                 emailer.sendMail(clientes.correo_usuario);
                 res.json("Registro logrado con exito");
-            
             //
             }
          

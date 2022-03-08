@@ -1,13 +1,16 @@
-const ModeloProducto = require('../modelos/modeloProductos');
+//const ModeloProducto = require('../modelos/modeloProductos');
+const {PrismaClient} = require('@prisma/client') ;
+const prisma = new PrismaClient();
+const ModeloProducto = prisma.productos;
 const fs = require('fs');
 const path = require('path');
 
 exports.Recibir = async (req,res) => {
         const { filename } = req.file; 
         const id = req.query.id; 
-        var BuscarProducto = await ModeloProducto.findOne({
+        var BuscarProducto = await ModeloProducto.findUnique({
             where: {
-                id_producto: id
+                id_producto: Number(id)
             }
         });
         if (!BuscarProducto){
@@ -29,7 +32,14 @@ exports.Recibir = async (req,res) => {
                 }
         }
             BuscarProducto.imagen = filename;
-            await BuscarProducto.save()
+            await prisma.productos.update({
+                where: {
+                    id_producto: Number(id)
+                },
+                data: {
+                 imagen: BuscarProducto.imagen 
+                }
+            })
             .then(( data)=>{
                 console.log(data);
                 res.send(data);
