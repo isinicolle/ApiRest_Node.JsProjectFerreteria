@@ -78,7 +78,7 @@ exports.loginUsuarioCliente = async (req,res,next) =>{
                     where:
                     {
                         correo_usuario: correo_usuario,
-                    },//
+                    },// 
                 })//
                 if(buscarUsuarioCliente!=null){
                 if(bcrypt.compareSync(contraenia_usuario,buscarUsuarioCliente.contraenia_usuario)){
@@ -86,11 +86,11 @@ exports.loginUsuarioCliente = async (req,res,next) =>{
 
                         const token = passport.generarToken({correo_usuario: buscarUsuarioCliente.correo_usuario});
                         console.log(token);
-
+ 
                         const data = {
                             token: token,
                             data: buscarUsuarioCliente
-                        };
+                        }; 
                         msj("Bienvenido", 200, data, res);
                     }
                     else{
@@ -269,12 +269,13 @@ exports.recuperarContrasena = async (req, res, next)=>
 {   
     
     const {correo_usuario} =req.query;
-    var {contraenia_usuario} = req.body;
-
+    var contraenia_usuario
+   
 
     if(!correo_usuario)
     {
         res.send("Envie el correo usuario del cliente");
+        console.log('error')
     }
     else
     {
@@ -309,7 +310,7 @@ exports.recuperarContrasena = async (req, res, next)=>
 
             emailer.sendMailPassword(clientes.correo_usuario,contraenia_usuario);
             res.json("Correo: "+clientes.correo_usuario+" Clave nueva: "+contraenia_usuario+" Ingrese nuevamente para cambiar su clave");
-
+            console.log('hola')
 
 
         } catch (error) {
