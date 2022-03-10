@@ -23,8 +23,8 @@ const validarEstado = joi.object({
 const validarClave = joi.object({
     contraenia_usuario: joi.string().min(6).required(),
 
-});
-
+});   
+  
 exports.listarUsuarioCliente = async (req,res,next) =>{
     try {
         const usuariocliente = await prisma.usuariosClientes.findMany();
@@ -99,6 +99,7 @@ exports.loginUsuarioCliente = async (req,res,next) =>{
                     }
                 }
                 else{
+                    console.log(correo_usuario,contraenia_usuario)
                     res.send("Usuario o contraseña incorrecto")
                 }
             }

@@ -1,6 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const { parse } = require("dotenv");
 const res = require("express/lib/response");
+const mensaje = require("../configuraciones/mensaje");
 const prisma = new PrismaClient();
 const modeloCarrito = prisma.carrito;
 const modeloItemCarrito = prisma.carritoItem;
@@ -8,19 +9,27 @@ const modeloDetalleVenta = prisma.detallesVentas;
 const modeloVenta = prisma.venta;
 const modeloUsuario = prisma.usuariosClientes
 
-exports.MostrarCarrito= async (req,res)=>{
+exports.MostrarCarrito= async (req,res,next)=>{
     let {idUsuario} = req.query;
-    idUsuario = parseInt(idUsuario);
+    console.log(idUsuario);
+    if (!idUsuario || idUsuario==undefined){
+    mensaje('Error al iniciar sesion',200,idUsuario,res);
+    next(mensaje);
+    }else
+    {
+        idUsuario = parseInt(idUsuario);
     let Carrito = await modeloCarrito.findFirst({
         where:{id_usuarioCliente:idUsuario},
         select:{CarritoItem:{select:{Productos:true,Productos:{include:{Marcas:true,Categorias:true}},cantidad:true}, }
             }
-
+  
 
 });
     Carrito = await calcularPrecio(Carrito);
     res.json(Carrito); 
-};
+
+} 
+};  
 
 exports.nuevoCarrito= async(req,res)=>{
     let {idUsuario} = req.query;
@@ -34,20 +43,20 @@ exports.nuevoCarrito= async(req,res)=>{
     }).catch((err)=>{
         res.json("Ocurrio un error");
         console.log(err);
-    });
+    }); 
 };
 exports.agregarProducto = async(req,res)=>{
     let {idUsuario} = req.query;
     let {idProducto} = req.body; 
     idUsuario = parseInt(idUsuario);
-    idProducto = parseInt(idProducto);
+    idProducto = parseInt(idProducto); 
     let{Cantidad} = req.body;
     const Carrito = await modeloCarrito.findFirst({where:{id_usuarioCliente:idUsuario}});
     const buscarProd = await modeloItemCarrito.findMany({
         where:{
             id_Carrito:Carrito.id_carrito,
-            id_producto:idProducto
-        }
+            id_producto:idProducto 
+        } 
     });
     if (buscarProd.length>0)
     {

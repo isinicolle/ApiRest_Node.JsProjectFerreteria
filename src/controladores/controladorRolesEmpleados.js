@@ -5,7 +5,7 @@ const joi = require("@hapi/joi");
 
 const validar = joi.object({
     descripcion: joi.string().min(5).max(50).required(),
-});
+});  
 
 //listar roles empleados
 exports.listarRolesEmpleados = async (req,res,next) =>{
@@ -16,8 +16,8 @@ exports.listarRolesEmpleados = async (req,res,next) =>{
         console.log(error)
         next(error);
     }
-}
-
+}  
+ 
 exports.insertarRolesEmpleados = async (req,res,next) =>{
     
     try {

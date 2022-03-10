@@ -6,5 +6,5 @@ const router = Router();
 router.get('/carritoCliente', controladorCarrito.MostrarCarrito);
 router.post('/nuevoCarrito', controladorCarrito.nuevoCarrito);
 router.post('/agregarProducto', controladorCarrito.agregarProducto);
-router.put('/modificarProducto', controladorCarrito.modificarCarrito);
+router.put('/modificarProducto', controladorCarrito.modificarCarrito); 
 module.exports=router; 
