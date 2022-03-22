@@ -7,4 +7,5 @@ router.get('/listar', controladorDepartamentos.listarDepartamentos);
 router.post('/agregar', controladorDepartamentos.agregarDepartamento);
 router.delete('/eliminar', controladorDepartamentos.eliminarDepartamento);
 router.put('/modificar', controladorDepartamentos.actualizarDepartamento);
+
 module.exports=router; 

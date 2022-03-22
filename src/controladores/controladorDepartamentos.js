@@ -2,7 +2,8 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const modeloDepartamento = prisma.departamentos;
 const joi = require("@hapi/joi");
-const { string } = require("@hapi/joi");
+const { string, number } = require("@hapi/joi");
+const msg = require('../configuraciones/mensaje');
 
 const validarAgregar = joi.object({
   nombreDepartamento: joi.string().min(5).required()

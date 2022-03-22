@@ -64,6 +64,26 @@ exports.buscarCiudad = async (req, res) => {
         }
         }
 }
+exports.listarCiudadesxDepartamento= async(req,res)=>{
+  
+    let {idDepartamento} = req.query;
+    if (!idDepartamento){
+      res.send({"Error":"No hay id"})
+    }
+    else {
+  
+      idDepartamento = Number(idDepartamento);
+        const buscarCiudades = await ModeloCiudad.findMany({
+          where:{id_departamento:idDepartamento},
+        });
+        if (!buscarCiudades)
+        msg("No se encontro ciudad",200,buscarCiudades,res);
+        else
+        
+          res.send(buscarCiudades);  
+    }
+      
+  }
 
 exports.ModificarCiudad = async (req, res) => {
     
