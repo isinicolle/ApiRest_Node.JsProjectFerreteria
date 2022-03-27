@@ -207,3 +207,17 @@ exports.buscarId = async (req,res,next) =>{
             res.send("Error inesperado");
         })
     }
+
+    exports.listarV = async (req,res,next) => {
+        let {id_Venta} = req.query;
+        await modeloVenta.findMany({
+            where:{id_Venta:Number(id_Venta)},
+            include:{DetallesVentas:{include:{Productos:true}}}
+        }).then((data)=>{
+            res.json(data);
+        }).catch((err)=>{
+            console.log(err);
+            res.send("Error inesperado");
+        })
+    };
+    

@@ -9,5 +9,6 @@ router.delete('/eliminar', controladorVentas.eliminar);
 router.get('/buscarid', controladorVentas.buscarId);
 router.post('/procesarCarrito', controladorVentas.procesarCarrito);
 router.get('/historial', controladorVentas.historialVentas);
+router.get('/ventaid', controladorVentas.listarV);
 
 module.exports=router; 
