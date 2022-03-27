@@ -56,7 +56,7 @@ exports.buscarProducto = async (req, res) => {
                     where: {
                         id_producto: Number(id_producto),
                     },
-                    select:{descripcion_producto:true,cantidad_por_unidad:true,precio_actual:true,stock:true,descuento:true,imagen:true,Marcas:{select:{id_marca:true,descripcion_marca:true}},Categorias:{select:{id_categoria:true,descripcion_categoria:true}}}
+                    select:{descripcion_producto:true,cantidad_por_unidad:true,costo_producto:true,precio_actual:true,stock:true,descuento:true,imagen:true,Marcas:{select:{id_marca:true,descripcion_marca:true}},Categorias:{select:{id_categoria:true,descripcion_categoria:true}}}
 
                 }
             )
@@ -71,7 +71,7 @@ exports.ModificarProducto = async (req, res) => {
     
     try {
         const {id_producto} =req.query;
-        const {descripcion_producto, id_marca, id_categoria , id_proveedor, cantidad_por_unidad, costo_producto, precio_actual, stock, descuento} = req.body;
+        const {descripcion_producto, costo_producto, precio_actual, stock, descuento} = req.body;
         const productos = await prisma.productos.update({
         where:
         {
@@ -80,10 +80,6 @@ exports.ModificarProducto = async (req, res) => {
         data: 
         {
             descripcion_producto: descripcion_producto,
-            id_marca:id_marca,
-            id_categoria:id_categoria,
-            id_proveedor:id_proveedor,
-            cantidad_por_unidad:cantidad_por_unidad,
             costo_producto:costo_producto,
             precio_actual:precio_actual,
             stock:stock,
