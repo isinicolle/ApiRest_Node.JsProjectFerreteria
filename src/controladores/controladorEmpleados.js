@@ -145,7 +145,7 @@ exports.id = async (req,res,next) =>{
             },
       
         });
-        console.log(empleados);
+     
         res.json(empleados);
     } catch (error) {
         console.log(error)
