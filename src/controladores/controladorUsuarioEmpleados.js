@@ -28,31 +28,29 @@ exports.listarUsuarioEmpleados = async (req, res, next) => {
 
 exports.insertarUsuarioEmpleados = async (req, res, next) => {
 
-    try {
-        const result = await validar.validateAsync(req.body);
-        if (result.error) {
-            res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
-            ;
-        }
-        else {
-            const { nom_usuarioEmpleado, contrasenia_empleado, id_empleado, correo_empleado } = req.body
-            const passwordHash = await bcrypt.hash(contrasenia_empleado, 12);
-            const usuarioEmpleados = await prisma.usuarioEmpleados.create({
-                data: {
-                    nom_usuarioEmpleado: nom_usuarioEmpleado,
-                    estado: true,
-                    contrasenia_empleado: passwordHash,
-                    correo_empleado: correo_empleado,
-                    Empleados: { connect: { id_empleado: id_empleado } },
-                },
+        const {nom_usuarioEmpleado,contrasenia_empleado, correo_empleado,id_empleado}= req.body;
+        const passwordHash = await bcrypt.hash(contrasenia_empleado,12);
+    
+            await prisma.usuarioEmpleados.create({
+              data:{ 
+                nom_usuarioEmpleado: nom_usuarioEmpleado,
+                contrasenia_empleado: passwordHash,
+                correo_empleado: correo_empleado,
+                id_empleado: id_empleado,
+                estado:true
+            },
             })
-            res.json(usuarioEmpleados);
-        }
-    } catch (error) {
-        console.log(error)
-        next(error);
+            .then((data) => {
+                console.log(data);
+                emailer.sendMail(clientes.correo_usuario);
+                res.send(data);
+              })
+              .catch((err) => {
+                console.log(err);
+                res.send("Usuario insertado con exito");
+              });
     }
-}
+    
 
 exports.eliminarUsuarioEmpleados = async (req, res) => {
     const { id_usuarioEmpleado } = req.query;
