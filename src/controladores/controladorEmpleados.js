@@ -28,7 +28,7 @@ exports.listarEmpleados = async (req,res,next) =>{
 exports.insertarEmpleados = async (req,res,next) =>{
     
     try {
-        const result = await validar.validate(req.body);
+        //const result = await validar.validate(req.body);
         if(result.error){
             res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
         }
@@ -151,4 +151,20 @@ exports.id = async (req,res,next) =>{
         console.log(error)
         next(error);
     }
+};
+
+exports.insertarempleadoprovicional = async (req,res,next) =>{
+
+  
+        try {
+            const empleados = await prisma.empleados.create({
+                data: req.body,
+            })
+            res.json(empleados);
+        } catch (error) {
+            console.log(error)
+            next(error);
+        }
+    
+    
 }
