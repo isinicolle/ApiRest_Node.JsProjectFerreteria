@@ -3,14 +3,11 @@ const prisma = new PrismaClient();
 const joi = require("@hapi/joi");
 
 const validar = joi.object({
-  nom_empleado:joi.string().min(3).required(),
-   apellido_empleado: joi.string().min(2).max(50).required(),
-   telefono_empleado: joi.string().min(8).max(20).required(),
-   id_ciudad: joi.number().integer().required(),
-   direccion_empleado: joi.string().min(10).max(50).required(),
-    id_rol: joi.number().integer().required(),
-   fnacimiento_empleado: joi.number().integer().required(),
-  Estado: joi.bool().required()
+
+nom_empleado: joi.string().min(2).max(50).required(),
+apellido_empleado: joi.string().min(2).max(50).required(),
+telefono_empleado: joi.string().min(2).max(20).required(),
+  
 });
 
 
@@ -155,7 +152,7 @@ exports.id = async (req,res,next) =>{
 
 exports.insertarempleadoprovicional = async (req,res,next) =>{
 
-  
+    
         try {
             const empleados = await prisma.empleados.create({
                 data: req.body,
@@ -166,5 +163,4 @@ exports.insertarempleadoprovicional = async (req,res,next) =>{
             next(error);
         }
     
-    
-}
+    }

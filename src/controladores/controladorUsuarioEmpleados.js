@@ -28,9 +28,20 @@ exports.listarUsuarioEmpleados = async (req, res, next) => {
 
 exports.insertarUsuarioEmpleados = async (req, res, next) => {
 
+
         const {nom_usuarioEmpleado,contrasenia_empleado, correo_empleado,id_empleado}= req.body;
         const passwordHash = await bcrypt.hash(contrasenia_empleado,12);
     
+        const result = await validar.validate(req.body);
+    if(result.error)
+    {
+        res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+
+    
+        
+    }
+    else
+    {
             await prisma.usuarioEmpleados.create({
               data:{ 
                 nom_usuarioEmpleado: nom_usuarioEmpleado,
@@ -49,7 +60,7 @@ exports.insertarUsuarioEmpleados = async (req, res, next) => {
                 console.log(err);
                 res.send("Usuario insertado con exito");
               });
-    }
+    }};
     
 
 exports.eliminarUsuarioEmpleados = async (req, res) => {
