@@ -1,7 +1,7 @@
 const {PrismaClient} = require('@prisma/client') ;
 const prisma = new PrismaClient();
 const ModeloProducto = prisma.productos;
-
+const msj = require('../configuraciones/mensaje');
 exports.listarProductos = async(req, res)=>{
     const listarProductos = await ModeloProducto.findAll();
     if(listarProductos.length == 0){
@@ -43,7 +43,36 @@ exports.eliminarProducto = async (req, res) => {
         }
         }
 }
-
+exports.buscarProductoFiltro = async(req,res)=>{  
+    const {s} = req.query;
+    if (!s){
+     msj('Error no se ha encontrado query',404,req.query,res);
+    res.send(msj)
+    }
+    else{
+         let num = Number(s);
+        if ((Number.isInteger(num)))
+           { 
+               const buscarProductos = await prisma.productos.findFirst({
+                where:{ 
+                    id_producto:num
+                }
+            })
+            res.send(buscarProductos)
+        }
+        else
+        {
+            console.log(s)
+            const buscarProductos = await prisma.productos.findMany({
+                where:{ 
+                    descripcion_producto:{contains:s}
+                }
+            })
+            res.send(buscarProductos)
+        }
+   
+}
+}
 exports.buscarProducto = async (req, res) => {
     const {id_producto} = req.query;
     if(!id_producto) {
