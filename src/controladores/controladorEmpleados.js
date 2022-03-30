@@ -135,3 +135,20 @@ exports.actualizarEmpleados = async (req, res) => {
 
 };
 
+//listar empleados
+exports.id = async (req,res,next) =>{
+    try {
+        const empleados = await prisma.empleados.findFirst({
+            orderBy :
+            {
+                id_empleado: 'desc',
+            },
+      
+        });
+        console.log(empleados);
+        res.json(empleados);
+    } catch (error) {
+        console.log(error)
+        next(error);
+    }
+}
