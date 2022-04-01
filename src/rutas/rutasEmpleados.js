@@ -9,5 +9,6 @@ router.post('/insertarEmpleados', controladorEmpleados.insertarempleadoprovicion
 router.delete('/eliminarEmpleados', controladorEmpleados.eliminarEmpleado);
 router.put('/actualizarEmpleados', controladorEmpleados.actualizarEmpleados);
 router.get('/idultimo', controladorEmpleados.id);
+router.put('/buscarEmpleado', controladorEmpleados.buscarEmpleado);
 
 module.exports=router; 
