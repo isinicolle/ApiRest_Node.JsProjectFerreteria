@@ -99,7 +99,7 @@ model Empleados {
   direccion_empleado   String             @db.NVarChar(50)
   id_ciudad            Int
   id_rol               Int
-  fnacimiento_empleado Int
+  fnacimiento_empleado DateTime
   Estado               Boolean
   Ciudades             Ciudades           @relation(fields: [id_ciudad], references: [id_ciudad], onUpdate: NoAction, map: "FK_Empleados_Ciudades")
   RolesEmpleados       RolesEmpleados     @relation(fields: [id_rol], references: [id_rol], onUpdate: NoAction, map: "FK_Empleados_RolesEmpleados")

@@ -8,5 +8,6 @@ router.get('/listarEmpleados', controladorEmpleados.listarEmpleados);
 router.post('/insertarEmpleados', controladorEmpleados.insertarEmpleados);
 router.delete('/eliminarEmpleados', controladorEmpleados.eliminarEmpleado);
 router.put('/actualizarEmpleados', controladorEmpleados.actualizarEmpleados);
+router.put('/buscarEmpleado', controladorEmpleados.buscarEmpleado);
 
 module.exports=router; 

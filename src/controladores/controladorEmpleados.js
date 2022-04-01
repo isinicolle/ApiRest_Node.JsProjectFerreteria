@@ -135,3 +135,26 @@ exports.actualizarEmpleados = async (req, res) => {
 
 };
 
+exports.buscarEmpleado = async (req,res,next) =>{
+    const {id_empleado} =req.query;
+
+    if(!id_empleado)
+    {
+        res.json("Envie el id de empleado");
+    }
+    else
+    {
+        try {
+            const buscarEmpleado = await prisma.empleados.findUnique(
+                {
+                    where:
+                    {
+                        id_empleado: Number(id_empleado),
+                    },//
+                })//
+                res.json(buscarEmpleado)
+        } catch (error) {
+            next(error)
+        }
+    }
+}
