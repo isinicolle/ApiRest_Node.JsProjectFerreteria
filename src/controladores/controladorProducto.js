@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 const ModeloProducto = prisma.productos;
 const msj = require('../configuraciones/mensaje');
 exports.listarProductos = async(req, res)=>{
-    const listarProductos = await ModeloProducto.findAll();
+    const listarProductos = await ModeloProducto.findMany({include:{Marcas:true,Categorias:true}});
     if(listarProductos.length == 0){
         res.send("No existen datos");
     }else{
@@ -11,7 +11,6 @@ exports.listarProductos = async(req, res)=>{
     }
 }
 exports.guardar = async (req, res) => {
-    
     try {
         const Productos = await prisma.productos.create({
             data: req.body,
@@ -66,7 +65,8 @@ exports.buscarProductoFiltro = async(req,res)=>{
             const buscarProductos = await prisma.productos.findMany({
                 where:{ 
                     descripcion_producto:{contains:s}
-                }
+                },
+                include:{Marcas:true,Categorias:true}
             })
             res.send(buscarProductos)
         }
