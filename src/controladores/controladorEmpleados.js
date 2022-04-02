@@ -3,14 +3,11 @@ const prisma = new PrismaClient();
 const joi = require("@hapi/joi");
 
 const validar = joi.object({
-  nom_empleado:joi.string().min(3).required(),
-   apellido_empleado: joi.string().min(2).max(50).required(),
-   telefono_empleado: joi.string().min(8).max(20).required(),
-   id_ciudad: joi.number().integer().required(),
-   direccion_empleado: joi.string().min(10).max(50).required(),
-    id_rol: joi.number().integer().required(),
-   fnacimiento_empleado: joi.number().integer().required(),
-  Estado: joi.bool().required()
+
+nom_empleado: joi.string().min(2).max(50).required(),
+apellido_empleado: joi.string().min(2).max(50).required(),
+telefono_empleado: joi.string().min(2).max(20).required(),
+  
 });
 
 
@@ -28,7 +25,7 @@ exports.listarEmpleados = async (req,res,next) =>{
 exports.insertarEmpleados = async (req,res,next) =>{
     
     try {
-        const result = await validar.validate(req.body);
+        //const result = await validar.validate(req.body);
         if(result.error){
             res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
         }
@@ -135,3 +132,58 @@ exports.actualizarEmpleados = async (req, res) => {
 
 };
 
+//listar empleados
+exports.id = async (req,res,next) =>{
+    try {
+        const empleados = await prisma.empleados.findFirst({
+            orderBy :
+            {
+                id_empleado: 'desc',
+            },
+      
+        });
+     
+        res.json(empleados);
+    } catch (error) {
+        console.log(error)
+        next(error);
+    }
+};
+
+exports.insertarempleadoprovicional = async (req,res,next) =>{
+
+    
+        try {
+            const empleados = await prisma.empleados.create({
+                data: req.body,
+            })
+            res.json(empleados);
+        } catch (error) {
+            console.log(error)
+            next(error);
+        }
+    
+    }
+exports.buscarEmpleado = async (req,res,next) =>{
+    const {id_empleado} =req.query;
+
+    if(!id_empleado)
+    {
+        res.json("Envie el id de empleado");
+    }
+    else
+    {
+        try {
+            const buscarEmpleado = await prisma.empleados.findUnique(
+                {
+                    where:
+                    {
+                        id_empleado: Number(id_empleado),
+                    },//
+                })//
+                res.json(buscarEmpleado)
+        } catch (error) {
+            next(error)
+        }
+    }
+}
