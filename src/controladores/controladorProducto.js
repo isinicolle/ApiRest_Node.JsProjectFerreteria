@@ -24,8 +24,8 @@ exports.guardar = async (req, res) => {
 };
 
 exports.eliminarProducto = async (req, res) => {
-    const {id} = req.query;
-    if(!id) {
+    const {id_producto} = req.query;
+    if(!id_producto) {
         res.send("Envie el id de registro");
     }
     else {
@@ -33,13 +33,13 @@ exports.eliminarProducto = async (req, res) => {
             const eliminarProducto = await prisma.productos.delete(
                 {
                     where: {
-                        id_producto: Number(id),
+                        id_producto: Number(id_producto),
                     }
                 }
             )
             res.json(eliminarProducto)
         } catch (error) {
-            next(error)
+        console.log(error);
         }
         }
 }
@@ -75,7 +75,7 @@ exports.ModificarProducto = async (req, res) => {
         const productos = await prisma.productos.update({
         where:
         {
-            id_producto:id_producto
+            id_producto:Number(id_producto)
         },
         data: 
         {
@@ -89,7 +89,7 @@ exports.ModificarProducto = async (req, res) => {
         })
         res.json(productos);
     } catch (error) {
-        console.log(error)
-        next(error)
+        console.log(error);
+        next(error);
     }
 }
