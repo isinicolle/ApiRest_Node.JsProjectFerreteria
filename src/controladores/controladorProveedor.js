@@ -24,7 +24,11 @@ const validarAgregar = joi.object({
 });
 
 exports.listarProveedores = async (req, res) => {
-  const listarProveedor = await modeloProveedor.findMany({});
+  const listarProveedor = await modeloProveedor.findMany({
+    where: {
+      Estado: true,
+    },
+  });
   if (!listarProveedor || listarProveedor.length == 0) {
     res.send("No hay datos en la tabla");
   } else {
