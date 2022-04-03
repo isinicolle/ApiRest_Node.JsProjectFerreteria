@@ -3,11 +3,12 @@ const prisma = new PrismaClient();
 const ModeloMarca = prisma.marcas;
 
 exports.listarMarcas = async(req, res)=>{
-    const listarMarcas = await ModeloMarca.findAll();
-    if(listarMarcas.length == 0){
-        res.send("No existen datos");
-    }else{
-        res.json(listarMarcas);
+    try {
+        const marcas = await prisma.marcas.findMany();
+        res.json(marcas);
+    } catch (error) {
+        console.log(error)
+        next(error);
     }
 }
 
