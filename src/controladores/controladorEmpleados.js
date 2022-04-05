@@ -119,7 +119,7 @@ exports.actualizarEmpleados = async (req, res) => {
   };
   
 
-  async function buscarEmpleado(id_empleado)
+  /*async function buscarEmpleado(id_empleado)
 {
   const buscar =await prisma.empleados.findMany({where:{
     id_empleado:id_empleado
@@ -130,7 +130,7 @@ exports.actualizarEmpleados = async (req, res) => {
     }
     else return false; //retorna si existe
 
-};
+};*/
 
 //listar empleados
 exports.id = async (req,res,next) =>{
