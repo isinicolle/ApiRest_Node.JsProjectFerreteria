@@ -7,7 +7,7 @@ const validar = joi.object({
 nom_empleado: joi.string().min(2).max(50).required(),
 apellido_empleado: joi.string().min(2).max(50).required(),
 telefono_empleado: joi.string().min(2).max(20).required(),
-  
+direccion_empleado: joi.string().min(2).max(200).required()
 });
 
 
@@ -75,51 +75,51 @@ exports.eliminarEmpleado= async (req,res) =>{
 }
 
 exports.actualizarEmpleados = async (req, res) => {
-    try {
+    const {id_empleado} =req.query;
+    const {nom_empleado,apellido_empleado, telefono_empleado, direccion_empleado} = req.body;
 
-        const result = await validar.validate(req.body);
-        if(result.error){
-            res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
-        }
-        else{
-        let { id_empleado } = req.query;
-    const { nom_empleado , apellido_empleado,telefono_empleado, direccion_empleado,Estado} = req.body;
-    let {id_ciudad,id_rol,fnacimiento_empleado} = req.body;
-    id_empleado=parseInt(id_empleado);
-    id_rol= parseInt(id_rol);
-    fnacimiento_empleado= parseInt(fnacimiento_empleado);
-      id_ciudad= parseInt(id_ciudad);
-   
-    if (!await buscarEmpleado(id_empleado))
+
+    if(!id_empleado)
     {
-        res.send("Este empleado no existe")
+        res.send("Envie el id del usuario del cliente");
     }
-    else{
-      await prisma.empleados.update({
-          where:{id_empleado:id_empleado},
-      data:{
-        nom_empleado:nom_empleado|| undefined,
-        apellido_empleado:apellido_empleado|| undefined,
-        telefono_empleado:telefono_empleado|| undefined,
-         direccion_empleado:direccion_empleado|| undefined,
-         id_ciudad:id_ciudad|| undefined,
-         id_rol:id_rol|| undefined,
-         fnacimiento_empleado:fnacimiento_empleado|| undefined,
-        Estado:Estado || undefined
-      }})
-      .then((data)=>{
-          console.log(data);
-          res.send("Se actualizaron los datos");
-      })} }
-    } catch (error) {
-        console.log(error)
-        next(error);
+    else
+    {
+        const result = await validar.validate(req.body);
+        if(result.error)
+        {
+            res.send("ERROR! Verifique que los datos a ingresar tienen el formato correcto");
+    
+        }
+        else
+        {
+            try {
+                const empleados = await prisma.empleados.update({
+                where:
+                {
+                      id_empleado: Number(id_empleado),
+                },
+                data: 
+                {
+                  nom_empleado: nom_empleado,
+                  apellido_empleado: apellido_empleado,
+                  telefono_empleado: telefono_empleado,
+                  direccion_empleado:direccion_empleado
+                }
+                
+                })
+                
+                res.json(empleados);
+            } catch (error) {
+                console.log(error)
+                next(error)
+            }
+        }
+       
     }
-   
-  };
-  
+  }
 
-  async function buscarEmpleado(id_empleado)
+  /*async function buscarEmpleado(id_empleado)
 {
   const buscar =await prisma.empleados.findMany({where:{
     id_empleado:id_empleado
@@ -130,7 +130,7 @@ exports.actualizarEmpleados = async (req, res) => {
     }
     else return false; //retorna si existe
 
-};
+};*/
 
 //listar empleados
 exports.id = async (req,res,next) =>{
