@@ -169,10 +169,12 @@ exports.loginUsuarioEmpleado = async (req, res) => {
                     where:
                     {
                         nom_usuarioEmpleado: nom_usuarioEmpleado,
-                    }
+                    },
+                    include:{Empleados:true}
                 })
 
             if (buscarUsuarioEmpleado != null) {
+                console.log(buscarUsuarioEmpleado)
                 if (bcrypt.compareSync(contra_empleado, buscarUsuarioEmpleado.contrasenia_empleado)) {
                     if (buscarUsuarioEmpleado.estado == true) {
 
@@ -220,6 +222,7 @@ exports.recuperarContrasena = async (req, res, next) => {
     else {
 
         contrasenia_empleado = (Math.floor(Math.random() * (99999 - 11111)) + 11111).toString();
+        console.log(contrasenia_empleado);
         const passwordHash = await bcrypt.hash(contrasenia_empleado, 12)
 
         try {
