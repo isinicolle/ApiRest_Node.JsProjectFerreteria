@@ -6,6 +6,6 @@ router.get('/listarProducto', controladorProducto.listarProductos);
 router.get('/buscarProducto', controladorProducto.buscarProducto);
 router.post('/guardarProducto', controladorProducto.guardar);
 router.put('/modificarProducto', controladorProducto.ModificarProducto);
-router.delete('/eliminarProducto', controladorProducto.eliminarProducto);
+router.put('/eliminarProducto', controladorProducto.eliminarProducto);
 router.get('/buscarProductoFiltro',controladorProducto.buscarProductoFiltro);
 module.exports=router;

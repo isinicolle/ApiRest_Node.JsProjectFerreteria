@@ -1,3 +1,4 @@
+const { bool } = require('@hapi/joi');
 const {PrismaClient} = require('@prisma/client') ;
 const prisma = new PrismaClient();
 const ModeloProducto = prisma.productos;
@@ -23,24 +24,26 @@ exports.guardar = async (req, res) => {
 };
 
 exports.eliminarProducto = async (req, res) => {
-    const {id_producto} = req.query;
-    if(!id_producto) {
-        res.send("Envie el id de registro");
-    }
-    else {
-        try {
-            const eliminarProducto = await prisma.productos.delete(
-                {
-                    where: {
-                        id_producto: Number(id_producto),
-                    }
-                }
-            )
-            res.json(eliminarProducto)
-        } catch (error) {
+    try {
+        const {id_producto} =req.query;
+        const {estado} = req.body;
+        
+        const productos = await prisma.productos.update({
+        where:
+        {
+            id_producto:Number(id_producto)
+        },
+        data: 
+        {
+            estado:!estado
+        }
+        
+        })
+        res.json(productos);
+    } catch (error) {
         console.log(error);
-        }
-        }
+        next(error);
+    }
 }
 exports.buscarProductoFiltro = async(req,res)=>{  
     const {s} = req.query;
@@ -85,7 +88,7 @@ exports.buscarProducto = async (req, res) => {
                     where: {
                         id_producto: Number(id_producto),
                     },
-                    select:{descripcion_producto:true,cantidad_por_unidad:true,costo_producto:true,precio_actual:true,stock:true,descuento:true,imagen:true,Marcas:{select:{id_marca:true,descripcion_marca:true}},Categorias:{select:{id_categoria:true,descripcion_categoria:true}}}
+                    select:{descripcion_producto:true,cantidad_por_unidad:true,costo_producto:true,precio_actual:true,stock:true,descuento:true,estado:true,imagen:true,Marcas:{select:{id_marca:true,descripcion_marca:true}},Categorias:{select:{id_categoria:true,descripcion_categoria:true}}}
 
                 }
             )
